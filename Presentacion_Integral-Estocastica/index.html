@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plantilla Estilo Tecnico - Reveal.js</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css"
+    />
+    <link rel="stylesheet" href="assets/theme.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section class="hero-slide">
+          <div class="split-grid">
+            <div>
+              <p class="kicker">Tema de exposicion</p>
+              <h1>Integral Estocástica Discreta</h1>
+              <p class="lead">Presenta: Daniel Pineda Ortega.</p>
+            </div>
+
+            <div class="panel-figure">
+              <video class="panel-video" autoplay muted loop playsinline controls>
+                <source src="assets/SumaARiemannStieltjes.mp4" type="video/mp4" />
+                Tu navegador no soporta video HTML5.
+              </video>
+            </div>
+          </div>
+        </section>
+
+        <section class="definitions-slide">
+          <h2>Definiciones</h2>
+          <p class="lead"><em>Es vital establecer quién es quién en la suma.</em></p>
+          <div class="defs-intro card accent-left">
+            <p>Para construir nuestra representación unificada, necesitamos dos elementos:</p>
+            <div class="chip-row">
+              <span class="chip chip-filled">\(M_n\): martingala</span>
+              <span class="chip">\(H_n\): proceso previsible</span>
+            </div>
+          </div>
+
+          <ol class="def-list">
+            <li>
+              <strong>La Martingala</strong> \((M_n)\): Representa el ruido, el mercado o el azar. Sus incrementos
+              \(\Delta M_n = M_n - M_{n-1}\) tienen esperanza condicional cero (es un "juego justo").
+            </li>
+            <li>
+              <strong>El Proceso Previsible</strong> \((H_n)\): Representa nuestra estrategia o nuestra "apuesta".
+              Es crucial que sea previsible \((\mathcal{F}_{n-1}\text{-medible})\), es decir, tomamos la decisión
+              basándonos en la información de ayer, no de hoy.
+            </li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>2. La Representación Unificada</h2>
+          <p class="lead inline-def">La transformada de martingala se define como el proceso \(Y=(H\cdot M)_n\).</p>
+          <div class="card accent-left">
+            <p class="equation-wrap">
+              $$Y_n=\sum_{i=1}^{n} H_i\big(M_i-M_{i-1}\big)$$
+            </p>
+          </div>
+        </section>
+
+        <section>
+          <h2>3. Propiedades que validan la Unificación</h2>
+          <ol class="def-list">
+            <li>
+              <strong>Linealidad:</strong> La integral de una suma es la suma de las integrales.
+              $$\big(aH+bD\big)\cdot M = a\big(H\cdot M\big) + b\big(D\cdot M\big).$$
+            </li>
+            <li>
+              <strong>Preservación de la Martingala:</strong> Esta es la propiedad más potente. Si \(M\) es una
+              martingala y \(H\) es previsible (y acotado), entonces la suma \(Y_n\) <strong>también es una
+              martingala</strong>.
+              <p><em>Explicación rápida:</em> "Si el juego es justo y mi apuesta no depende del futuro, mi
+                ganancia acumulada seguirá siendo un juego justo".</p>
+            </li>
+            <li>
+              <strong>Ortogonalidad:</strong> Los incrementos de la suma están incorrelacionados, lo cual es análogo
+              a la independencia en el cálculo clásico.
+            </li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>La Isometría de Itô Discreta</h2>
+          <p class="lead inline-def">Si \(H\) es un proceso predecible y \(M\) es una martingala, entonces:</p>
+          <div class="card accent-left">
+            <p class="equation-wrap">
+              $$\mathbb{E}\!\left[\big((H\cdot M)_n\big)^2\right]
+              = \mathbb{E}\!\left[\sum_k H_k^2\big(M_k-M_{k-1}\big)^2\right]$$
+            </p>
+          </div>
+        </section>
+
+        <section>
+          <h2>Cálculo de la variación cuadrática discreta \(\langle M \rangle_n\)</h2>
+          <h3>1. Definición Matemática</h3>
+          <p>
+            Para un proceso estocástico \(\{M_n\}_{n\ge 0}\), la variación cuadrática discreta se define
+            como el proceso:
+          </p>
+          <div class="card accent-left">
+            <p class="equation-wrap">
+              $$\langle M \rangle_n = \sum_{k=1}^{n}\mathbb{E}\!\left[(M_k - M_{k-1})^2\mid\mathcal{F}_{k-1}\right]$$
+            </p>
+          </div>
+          <p>
+            Si el proceso \(M_n\) es una <strong>martingala de cuadrado integrable</strong>,
+            \(\langle M \rangle_n\) es el único proceso previsible, creciente y con
+            \(\langle M \rangle_0 = 0\) tal que \(M_n^2 - \langle M \rangle_n\) es también una martingala.
+          </p>
+        </section>
+
+        <section
+          data-background-video="assets/VariacionCuadratica.mp4"
+          data-background-video-loop
+          data-background-video-muted
+          data-background-size="cover"
+        ></section>
+
+        <section
+          data-background-video="assets/TransicionEstocasticaImpactante.mp4"
+          data-background-video-loop
+          data-background-video-muted
+          data-background-size="cover"
+        ></section>
+
+        <section class="conclusion-slide">
+          <h2>Conclusión</h2>
+          <p>
+            La transición del mundo discreto al continuo no es una simple "aproximación", sino una
+            convergencia de estructuras algebraicas hacia estructuras analíticas.
+          </p>
+
+          <ol class="def-list">
+            <li>
+              <strong>La Representación Unificada:</strong> Al entender las martingalas como
+              <strong>sumas de Riemann-Stieltjes estocásticas</strong>, dejamos de ver el proceso como una secuencia
+              de apuestas y empezamos a verlo como una integral. En el mundo discreto, la suma
+              \(Y_n=\sum_{i=1}^{n} H_i\Delta M_i\) es la base; al refinar la partición del tiempo, esta suma
+              "encaja" naturalmente en la definición de la Integral de Itô:
+              <p class="equation-wrap">$$\int_0^t H_s\,dM_s$$</p>
+            </li>
+            <li>
+              <strong>Isometría de Itô:</strong> En el caso discreto, la varianza de una martingala es la suma de las
+              varianzas de sus incrementos. Esta propiedad es la que permite que la integral estocástica sea una
+              operación bien definida en espacios de Hilbert (espacios \(L^2\)). Sin esta isometría, no podríamos
+              garantizar que el "ruido" continuo se mantenga bajo control matemático.
+            </li>
+            <li>
+              <strong>Variación Cuadrática \(\langle M \rangle_n\):</strong> Este es el concepto más crítico. Mientras
+              que en el cálculo tradicional (Newton-Leibniz) las funciones son de variación acotada (sus derivadas
+              existen y son "suaves"), en el cálculo estocástico la <strong>variación cuadrática no es cero</strong>.
+              El paso al continuo transforma la suma de cuadrados de los incrementos en un proceso creciente continuo
+              que mide la "cantidad de azar" acumulado.
+            </li>
+          </ol>
+        </section>
+
+        <section class="thankyou-slide">
+          <canvas id="fireworks-canvas" aria-hidden="true"></canvas>
+          <div class="thankyou-content">
+            <h2 class="thankyou-text">¡Gracias por su atención!</h2>
+            <img class="thankyou-image" src="assets/reverencia.jpg" alt="Reverencia final" />
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/math/math.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        width: 1366,
+        height: 768,
+        margin: 0.06,
+        transition: "fade",
+        backgroundTransition: "fade",
+        keyboard: true,
+        mouseWheel: true,
+        controls: true,
+        progress: true,
+        slideNumber: "c/t",
+        plugins: [RevealMath.KaTeX]
+      });
+
+      const thanksSlide = document.querySelector(".thankyou-slide");
+      const fireworksCanvas = document.getElementById("fireworks-canvas");
+
+      if (thanksSlide && fireworksCanvas) {
+        const context = fireworksCanvas.getContext("2d");
+        let animationId = null;
+        let launchTimer = null;
+        let running = false;
+        const rockets = [];
+        const sparks = [];
+
+        const palette = ["#ffef5a", "#8afcff", "#c8ff46", "#ff8fd1", "#ffd28a", "#9faeff"];
+
+        function resizeCanvas() {
+          const scale = window.devicePixelRatio || 1;
+          const width = thanksSlide.clientWidth;
+          const height = thanksSlide.clientHeight;
+
+          fireworksCanvas.width = Math.max(1, Math.floor(width * scale));
+          fireworksCanvas.height = Math.max(1, Math.floor(height * scale));
+          fireworksCanvas.style.width = width + "px";
+          fireworksCanvas.style.height = height + "px";
+          context.setTransform(scale, 0, 0, scale, 0, 0);
+        }
+
+        function launchRocket() {
+          const width = fireworksCanvas.clientWidth;
+          const height = fireworksCanvas.clientHeight;
+          rockets.push({
+            x: Math.random() * width,
+            y: height + 12,
+            vx: (Math.random() - 0.5) * 0.9,
+            vy: -(4.8 + Math.random() * 2.1),
+            targetY: height * (0.2 + Math.random() * 0.42),
+            color: palette[Math.floor(Math.random() * palette.length)]
+          });
+        }
+
+        function burst(rocket) {
+          const count = 38 + Math.floor(Math.random() * 26);
+          for (let i = 0; i < count; i += 1) {
+            const angle = (Math.PI * 2 * i) / count;
+            const speed = 1.2 + Math.random() * 3.1;
+            sparks.push({
+              x: rocket.x,
+              y: rocket.y,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              life: 56 + Math.random() * 30,
+              alpha: 1,
+              gravity: 0.043 + Math.random() * 0.03,
+              color: rocket.color
+            });
+          }
+        }
+
+        function drawFrame() {
+          const width = fireworksCanvas.clientWidth;
+          const height = fireworksCanvas.clientHeight;
+          context.clearRect(0, 0, width, height);
+
+          for (let i = rockets.length - 1; i >= 0; i -= 1) {
+            const rocket = rockets[i];
+            rocket.x += rocket.vx;
+            rocket.y += rocket.vy;
+
+            context.beginPath();
+            context.arc(rocket.x, rocket.y, 2.2, 0, Math.PI * 2);
+            context.fillStyle = rocket.color;
+            context.fill();
+
+            if (rocket.y <= rocket.targetY) {
+              burst(rocket);
+              rockets.splice(i, 1);
+            }
+          }
+
+          for (let i = sparks.length - 1; i >= 0; i -= 1) {
+            const spark = sparks[i];
+            spark.x += spark.vx;
+            spark.y += spark.vy;
+            spark.vy += spark.gravity;
+            spark.life -= 1;
+            spark.alpha = Math.max(0, spark.life / 70);
+
+            context.beginPath();
+            context.arc(spark.x, spark.y, 1.7, 0, Math.PI * 2);
+            context.fillStyle = spark.color;
+            context.globalAlpha = spark.alpha;
+            context.fill();
+            context.globalAlpha = 1;
+
+            if (spark.life <= 0) {
+              sparks.splice(i, 1);
+            }
+          }
+
+          if (running) {
+            animationId = requestAnimationFrame(drawFrame);
+          }
+        }
+
+        function startFireworks() {
+          if (running) {
+            return;
+          }
+          running = true;
+          resizeCanvas();
+          launchRocket();
+          launchTimer = setInterval(launchRocket, 340);
+          drawFrame();
+        }
+
+        function stopFireworks() {
+          running = false;
+          if (launchTimer) {
+            clearInterval(launchTimer);
+            launchTimer = null;
+          }
+          if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+          }
+          rockets.length = 0;
+          sparks.length = 0;
+          context.clearRect(0, 0, fireworksCanvas.clientWidth, fireworksCanvas.clientHeight);
+        }
+
+        function syncFireworks(currentSlide) {
+          if (currentSlide === thanksSlide) {
+            startFireworks();
+          } else {
+            stopFireworks();
+          }
+        }
+
+        window.addEventListener("resize", () => {
+          if (running) {
+            resizeCanvas();
+          }
+        });
+
+        Reveal.on("slidechanged", (event) => syncFireworks(event.currentSlide));
+        Reveal.on("ready", (event) => syncFireworks(event.currentSlide));
+      }
+    </script>
+  </body>
+</html>
