@@ -65,6 +65,35 @@ body {
   max-width: 52ch;
 }
 
+.fullscreen-button {
+  appearance: none;
+  border: 2px solid var(--accent);
+  background: rgba(31, 32, 36, 0.92);
+  color: var(--accent);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  margin-top: 1.25rem;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.fullscreen-button:hover,
+.fullscreen-button:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(200, 255, 70, 0.16);
+  color: #f5ffd0;
+  box-shadow: 0 0 0 3px rgba(200, 255, 70, 0.14);
+}
+
 .inline-def {
   white-space: nowrap;
   max-width: none;
@@ -359,6 +388,11 @@ body {
 @media (max-width: 1000px) {
   .reveal .slides section {
     padding: 1.2rem;
+  }
+
+  .fullscreen-button {
+    width: 100%;
+    max-width: 22rem;
   }
 
   .split-grid,

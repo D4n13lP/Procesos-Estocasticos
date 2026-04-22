@@ -27,6 +27,9 @@
               <p class="kicker">Tema de exposicion</p>
               <h1>Integral Estocástica Discreta</h1>
               <p class="lead">Presenta: Daniel Pineda Ortega.</p>
+              <button class="fullscreen-button" type="button" id="fullscreen-button">
+                Pantalla completa
+              </button>
             </div>
 
             <div class="panel-figure">
@@ -196,6 +199,44 @@
         slideNumber: "c/t",
         plugins: [RevealMath.KaTeX]
       });
+
+      const fullscreenButton = document.getElementById("fullscreen-button");
+
+      async function enterFullscreen() {
+        const target = document.documentElement;
+
+        if (document.fullscreenElement) {
+          if (document.exitFullscreen) {
+            await document.exitFullscreen();
+          }
+          return;
+        }
+
+        if (target.requestFullscreen) {
+          await target.requestFullscreen({ navigationUI: "hide" });
+          return;
+        }
+
+        if (target.webkitRequestFullscreen) {
+          target.webkitRequestFullscreen();
+        }
+      }
+
+      if (fullscreenButton) {
+        fullscreenButton.addEventListener("click", () => {
+          enterFullscreen().catch(() => {
+            fullscreenButton.textContent = "Pantalla completa no disponible";
+          });
+        });
+
+        const updateFullscreenLabel = () => {
+          const active = Boolean(document.fullscreenElement);
+          fullscreenButton.textContent = active ? "Salir de pantalla completa" : "Pantalla completa";
+        };
+
+        document.addEventListener("fullscreenchange", updateFullscreenLabel);
+        updateFullscreenLabel();
+      }
 
       const thanksSlide = document.querySelector(".thankyou-slide");
       const fireworksCanvas = document.getElementById("fireworks-canvas");
