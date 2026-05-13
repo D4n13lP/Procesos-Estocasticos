@@ -1,0 +1,611 @@
+\documentclass[letterpaper, 12pt]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, arrows.meta}
+\usetikzlibrary{babel}
+\usepackage[margin=2cm]{geometry}
+\usepackage{xcolor}
+%\usepackage{tgpagella} % No se usa actualmente
+\usepackage{fourier}
+%\usepackage{charter}   % No se usa actualmente
+\usepackage{tgheros}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage[spanish, es-tabla]{babel} % es-tabla pone "Tabla" en vez de "Cuadro"
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{tocloft}
+\usepackage{placeins}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref} % 'hidelinks' quita los cuadros de colores feos
+\usepackage{amssymb}
+\usepackage{bbm}
+
+% Definiciones de comandos matemáticos
+\newcommand{\E}{\mathbb{E}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\1}{\mathbbm{1}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Poisson}{Poisson}
+\DeclareMathOperator{\Bin}{Bin}
+\DeclareMathOperator{\Exp}{Exp}
+\DeclareMathOperator{\Uniform}{Uniform}
+
+% Puntos guía entre el texto de la entrada y el número de página.
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftfigleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cfttableader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftsecindent}{2em}  % Sangría para secciones en el índice
+\setlength{\textfloatsep}{8pt}   % espacio entre float arriba/abajo y texto
+\setlength{\intextsep}{8pt}      % espacio para figuras "en medio" del texto ([h])
+\usepackage{fancyhdr}
+\setlength{\headheight}{14.5pt}
+
+\pagestyle{fancy}
+\fancyhead{} % Borra el encabezado por defecto
+\fancyhead[L]{\textbf{Procesos Estocásticos 2026-2}} % Encabezado izquierdo
+\fancyhead[R]{Tarea 3}
+\fancyfoot{} % Borra el pie de página por defecto
+\fancyfoot[C]{\thepage} % Número de página en el centro
+\definecolor{azulunam}{RGB}{0, 43, 122}
+\definecolor{doradounam}{RGB}{199, 146, 19}
+\newcommand{\escudomargen}{1cm}
+
+
+\setcounter{secnumdepth}{0} %Evita que las secciones se numeren, pero permite que aparezcan en el índice
+\begin{document}
+
+    \begin{titlepage}
+        \thispagestyle{empty}
+        \fontfamily{qhv}\selectfont
+        \singlespacing
+        \fontsize{14}{18}\selectfont
+        %\newgeometry{margin=2cm} % márgenes más pequeños
+        \newgeometry{
+            left=1cm,
+            right=1cm,
+            top=1cm,
+            bottom=1cm
+        }
+
+        \begin{tikzpicture}[remember picture, overlay]
+            \node[anchor=east] 
+            at ([xshift=-\escudomargen,yshift=11.5cm]current page.east) {
+                \includegraphics[height=2cm]{escudo_mac.jpg}
+            };
+            \node[anchor=west] 
+            at ([xshift=\escudomargen,yshift=11.5cm]current page.west) {
+                \includegraphics[height=2.6cm]{escudo-a.png}
+            };
+            % Linea horizontal
+            \draw[line width=2pt, color=azulunam] 
+            ([xshift=-6.5cm,yshift=11.5cm]current page.center) -- 
+            ([xshift=6.2cm,yshift=11.5cm]current page.center);
+            %Linea vertical
+            \draw[line width=2pt, color=azulunam] 
+            ([xshift=-8.6cm,yshift=-11cm]current page.center) -- 
+            ([xshift=-8.6cm,yshift=9.5cm]current page.center);
+        \end{tikzpicture}
+        \begin{center}
+            {\fontsize{14.4}{16}\selectfont \textbf{\textsc{UNIVERSIDAD NACIONAL AUTÓNOMA DE MÉXICO}} \vspace{0.5cm} }\\
+            {\fontsize{12}{14}\selectfont \textbf{\textsc{FACULTAD DE ESTUDIOS SUPERIORES ACATLÁN}} \vspace{0.8cm} }\\
+            \vspace{1cm}
+            {\textsc{División de Matemáticas e Ingenierias}} \\
+            \vspace{0.8cm}
+            Licenciatura en Matemáticas Aplicadas y Computación \\
+            \vspace{1.5cm}
+
+            \begin{minipage}{0.8\textwidth}
+                \centering
+                Asignatura: Procesos Estocásticos \\
+                \vspace{0.3cm}
+                Profesor: Dr. César Galindo López
+            \end{minipage}\\
+            \vspace{1.5cm}
+            {\fontsize{14.4}{18}\selectfont Tarea 3. \\ \vspace{0.3cm} \textbf{Cadenas de Markov a tiempo continuo, proceso de Poisson, \\
+            colas M/M/k y M/M/$\infty$, optimal stopping, martingalas \\ y cambios de medida}}
+            \vspace{1.5cm}
+            \begin{table}[h]
+                \centering
+                \vspace{0.3cm}
+                {\fontsize{15}{18}\selectfont
+                \begin{tabular}{l l} % 'l' izquierda, 'c' centro, 'c' centro
+                    % No ponemos '|' entre las letras para evitar líneas verticales
+                    Presenta: 
+                    %\addlinespace[0.3cm] % Espacio extra entre filas sin líneas
+                       &  \textbullet\ Pineda Ortega Daniel\\
+                      
+                    
+                \end{tabular}
+                }
+            \end{table}
+
+
+            Grupo: 2601 \\ \vspace{1.5cm}
+            \hspace{5.5cm} Fecha de entrega: 13 de mayo de 2026 
+
+            
+        \end{center}
+    \end{titlepage}
+    \restoregeometry
+
+    %\pagenumbering{roman} % Números romanos para el índice (opcional)
+    \tableofcontents
+   
+    %\listoffigures %(Índice de imágenes).
+
+    %\listoftables %(Índice de tablas).
+
+    \setlength{\parindent}{0pt}
+    \pagenumbering{arabic}
+    \setcounter{page}{1}
+    \pagestyle{fancy}
+    \thispagestyle{fancy}
+    \newpage
+    \section{Cadenas de Markov a tiempo continuo: generador, construcci\'on y ergodicidad}
+
+    \subsection{Ejercicio 1.1}
+    Sea $(X_t)_{t\ge0}$ una cadena de Markov a tiempo continuo sobre $S$ numerable con semigrupo $(P_t)_{t\ge0}$. Suponemos que para toda $f:S\to\R$ acotada existe el l\'imite
+    \[
+    Lf(x)=\lim_{t\downarrow0}\frac{P_tf(x)-f(x)}{t}.
+    \]
+    Tomemos $f=\1_{\{y\}}$ con $y\neq x$. Como $P_t\1_{\{y\}}(x)=P_t(x,y)$, tenemos
+    \[
+    L\1_{\{y\}}(x)=\lim_{t\downarrow0}\frac{P_t(x,y)-\delta_{xy}}{t}.
+    \]
+    Si $y\neq x$, entonces $\delta_{xy}=0$, luego el l\'imite existe y lo denotamos $\alpha(x,y)\ge0$ (no negatividad por ser $P_t(x,y)\ge0$). Para $y=x$,
+    \[
+    L\1_{\{x\}}(x)=\lim_{t\downarrow0}\frac{P_t(x,x)-1}{t}=A(x,x)\le0.
+    \]
+    Definiendo $\alpha(x)=\sum_{y\neq x}\alpha(x,y)$ (que puede ser finito o infinito; la cadena es conservativa y no explosiva por hip\'otesis, luego $\alpha(x)<\infty$), la matriz generadora es $A(x,y)=\alpha(x,y)$ si $y\neq x$, y $A(x,x)=-\alpha(x)$. Los coeficientes $\alpha(x,y)$ son las tasas instant\'aneas de salto de $x$ a $y$; en particular, $\alpha(x)$ es la tasa total de salida del estado $x$.
+
+    \subsection{Ejercicio 1.2}
+    Sea $A$ una matriz generadora conservativa sobre $S$ numerable y supongamos que existe una cadena de Markov a tiempo continuo no explosiva con generador $A$. El tiempo de permanencia en $x$ se define como $T_1=\inf\{t>0:X_t\neq x\}$ con $X_0=x$. Para todo $t\ge0$,
+    \[
+    \P_x(T_1>t)=P_t(x,x).
+    \]
+    Por la ecuaci\'on hacia atr\'as,
+    \[
+    \frac{d}{dt}P_t(x,x)=A(x,x)P_t(x,x)=-\alpha(x)P_t(x,x),
+    \]
+    con condici\'on inicial $P_0(x,x)=1$. La soluci\'on es $P_t(x,x)=e^{-\alpha(x)t}$, luego $T_1\sim\Exp(\alpha(x))$. Para la distribuci\'on del siguiente estado, consideremos $y\neq x$:
+    \[
+    \P_x(X_{T_1}=y)=\lim_{t\to\infty}\frac{\P_x(X_t=y,\;T_1\le t)}{\P_x(T_1\le t)}.
+    \]
+    Usando las ecuaciones de Kolmogorov, se obtiene que la probabilidad de saltar a $y$ antes de $t$ es $\alpha(x,y)t+o(t)$, y condicionando a que ocurra un salto, la probabilidad es $\alpha(x,y)/\alpha(x)$. Por tanto, $r(x,y)=\alpha(x,y)/\alpha(x)$. La construcci\'on se realiza generando primero $T_1\sim\Exp(\alpha(x_0))$, luego el siguiente estado seg\'un $r(x_0,\cdot)$, y repetir el procedimiento. La no explosividad garantiza que la suma de los tiempos exponenciales diverge a infinito.
+
+    \subsection{Ejercicio 1.3 (Sistema de inventario)}
+    La cadena nacimiento--muerte tiene tasas $\lambda_n=\lambda$ para $n\ge0$ (nacimientos) y $\mu_n=\mu\1_{\{n\ge1\}}$ (muertes). Las ecuaciones de Kolmogorov hacia adelante: $\frac{d}{dt}p_t(i,j)=\sum_k p_t(i,k)A(k,j)$. Expl\'icitamente,
+    \[
+    \begin{aligned}
+    \frac{d}{dt}p_t(i,0)&=-\lambda p_t(i,0)+\mu p_t(i,1),\\
+    \frac{d}{dt}p_t(i,n)&=\lambda p_t(i,n-1)-(\lambda+\mu\1_{\{n\ge1\}})p_t(i,n)+\mu p_t(i,n+1),\quad n\ge1.
+    \end{aligned}
+    \]
+    Las ecuaciones hacia atr\'as: $\frac{d}{dt}p_t(i,j)=\sum_k A(i,k)p_t(k,j)$.
+    Para $m_t(i)=\E_i[X_t]$, multiplicamos la ecuaci\'on hacia adelante por $n$ y sumamos. Se obtiene
+    \[
+    \frac{d}{dt}m_t(i)=\lambda-\mu\P_i(X_t\ge1).
+    \]
+    Si $\lambda<\mu$, $\P_i(X_t\ge1)$ tiende a $\lambda/\mu$ (carga estacionaria), luego la derivada tiende a cero. En r\'egimen transitorio, el signo de $m_t'(i)$ depende de si $\P_i(X_t\ge1)$ es menor o mayor que $\lambda/\mu$. Con $\lambda>\mu$, la derivada es positiva a largo plazo, indicando deriva hacia infinito.
+
+    \subsection{Ejercicio 1.4}
+    Para una cadena irreducible sobre estado finito $S$, el generador $A$ es una matriz. La existencia de una \'unica distribuci\'on invariante $\pi$ (soluci\'on de $\pi A=0$, $\sum\pi_i=1$) es est\'andar (teorema de Perron-Frobenius para matrices estoc\'asticas en tiempo continuo). M\'as a\'un, para cualquier $x,y$,
+    \[
+    \lim_{t\to\infty}P_t(x,y)=\pi(y).
+    \]
+    La prueba usa la descomposici\'on espectral de $e^{tA}$ o argumentos de acoplamiento.
+
+    \subsection{Ejercicio 1.5 (Reversibilidad)}
+    Si $\pi$ satisface las ecuaciones de balance detallado $\pi(x)\alpha(x,y)=\pi(y)\alpha(y,x)$ para todo $x\neq y$, entonces para cualquier $y$,
+    \[
+    \sum_{x\neq y}\pi(x)\alpha(x,y)=\sum_{x\neq y}\pi(y)\alpha(y,x)=\pi(y)\alpha(y),
+    \]
+    de donde $(\pi A)(y)=\sum_x\pi(x)A(x,y)=0$. Luego $\pi$ es invariante. La autoadjunci\'on en $L^2(\pi)$:
+    \[
+    \sum_x\pi(x)f(x)P_tg(x)=\sum_x\pi(x)f(x)\sum_y P_t(x,y)g(y)=\sum_y\pi(y)g(y)P_tf(y),
+    \]
+    usando la reversibilidad $\pi(x)P_t(x,y)=\pi(y)P_t(y,x)$. Esto significa que el proceso es reversible y el semigrupo es autoadjunto.
+
+    \subsection{Ejercicio 1.6 (Ergodicidad)}
+    Aplicamos el teorema erg\'odico para cadenas de Markov a tiempo continuo irreducibles y positivas recurrentes. Para toda funci\'on $f$ integrable respecto de $\pi$,
+    \[
+    \frac1t\int_0^t f(X_s)\,ds\xrightarrow[t\to\infty]{\text{c.s.}}\sum_{x\in S}f(x)\pi(x).
+    \]
+    En una cadena nacimiento--muerte reversible, $\pi$ est\'a dada por la f\'ormula producto, y el promedio temporal del n\'umero de clientes converge a $\E_\pi[X]$.
+
+    \subsection{Ejercicio 1.7 (Caminata continua en $\Z$)}
+    Sean $N^+_t,N^-_t$ procesos de Poisson independientes con tasas $\alpha,\beta$. Defina $X_t=N^+_t-N^-_t$. Los incrementos son independientes y estacionarios, con distribuci\'on de saltos: $\P(X_{t+s}-X_t=1)=\alpha s+o(s)$, $\P(X_{t+s}-X_t=-1)=\beta s+o(s)$, $\P(|X_{t+s}-X_t|>1)=o(s)$. Luego $X_t$ es la caminata aleatoria continua. Tenemos $\E[X_t]=(\alpha-\beta)t$, $\Var(X_t)=(\alpha+\beta)t$. La funci\'on caracter\'istica: $\phi_{X_t}(u)=e^{t(\alpha(e^{iu}-1)+\beta(e^{-iu}-1))}$. Una medida invariante finita existe si y solo si $\alpha=\beta$ (caso sim\'etrico, $\pi$ uniforme). Si $\alpha\neq\beta$, la caminata es transitoria y no hay distribuci\'on invariante finita.
+
+    \subsection{Ejercicio 1.8 (M\'aquina con dos modos)}
+    Estados: 0 (apagada), 1 (operando), 2 (averiada). Tasas: $0\to1$ a tasa $\alpha$; $1\to2$ a tasa $\beta$; $2\to0$ a tasa $\gamma$. Matriz generadora:
+    \[
+    A=\begin{pmatrix}
+    -\alpha & \alpha & 0\\
+    0 & -\beta & \beta\\
+    \gamma & 0 & -\gamma
+    \end{pmatrix}.
+    \]
+    Buscamos $\pi=(\pi_0,\pi_1,\pi_2)$ soluci\'on de $\pi A=0$:
+    \[
+    \begin{cases}
+    -\alpha\pi_0+\gamma\pi_2=0,\\
+    \alpha\pi_0-\beta\pi_1=0,\\
+    \beta\pi_1-\gamma\pi_2=0.
+    \end{cases}
+    \]
+    De la segunda, $\pi_1=\frac{\alpha}{\beta}\pi_0$; de la primera, $\pi_2=\frac{\alpha}{\gamma}\pi_0$. Normalizando:
+    \[
+    \pi_0\left(1+\frac{\alpha}{\beta}+\frac{\alpha}{\gamma}\right)=1\Rightarrow \pi_0=\frac{1}{1+\alpha/\beta+\alpha/\gamma}.
+    \]
+    Fracci\'on de tiempo operando: $\pi_1=\frac{\alpha/\beta}{1+\alpha/\beta+\alpha/\gamma}$. Si $\gamma\to\infty$, $\pi_2\to0$, $\pi_0\to\frac{1}{1+\alpha/\beta}$, $\pi_1\to\frac{\alpha/\beta}{1+\alpha/\beta}$ (se repara instant\'aneamente). Si $\beta\to0$, $\pi_1\to1$ (casi siempre operando).
+
+    \subsection{Ejercicio 1.9 (Nacimiento--muerte invariante)}
+    Las ecuaciones de balance global para una cadena nacimiento--muerte irreducible son $\pi_n\lambda_n=\pi_{n+1}\mu_{n+1}$ (balance detallado). Se demuestra por inducci\'on: para $n=0$, la ecuaci\'on $\pi_0\lambda_0=\pi_1\mu_1$; supongamos cierto hasta $n-1$, luego de la ecuaci\'on para el estado $n$: $\pi_n(\lambda_n+\mu_n)=\pi_{n-1}\lambda_{n-1}+\pi_{n+1}\mu_{n+1}$. Usando la hip\'otesis $\pi_{n-1}\lambda_{n-1}=\pi_n\mu_n$, se obtiene $\pi_{n+1}\mu_{n+1}=\pi_n\lambda_n$. As\'i, $\pi_n=\pi_0\prod_{j=0}^{n-1}\frac{\lambda_j}{\mu_{j+1}}$. Para $\lambda_n\equiv\lambda$, $\mu_n\equiv\mu\1_{\{n\ge1\}}$, $\pi_n=\pi_0(\lambda/\mu)^n$ para $n\ge0$. La suma $\sum_{n\ge0}\pi_n<\infty$ si $\lambda<\mu$, entonces la cadena es positiva recurrente. Si $\lambda=\mu$, $\pi_n=\pi_0$ y la suma diverge (nula recurrente). Si $\lambda>\mu$, no hay medida invariante finita.
+
+    \subsection{Ejercicio 1.10 (Dos m\'aquinas)}
+    $X_t$ = n\'umero de m\'aquinas operativas. Estados $\{0,1,2\}$. Tasas: cuando hay $n$ m\'aquinas operativas, las fallas ocurren a tasa $n\beta$ (cada una falla independientemente a tasa $\beta$); las reparaciones: cuando hay $2-n$ m\'aquinas averiadas, cada una se repara a tasa $\gamma$, luego la tasa de reparaci\'on es $(2-n)\gamma$. As\'i:
+    \[
+    \alpha(0,1)=2\gamma,\quad \alpha(1,0)=\beta,\quad \alpha(1,2)=\beta,\quad \alpha(2,1)=2\gamma.
+    \]
+    Generador:
+    \[
+    A=\begin{pmatrix}
+    -2\gamma & 2\gamma & 0\\
+    \beta & -2\beta & \beta\\
+    0 & 2\gamma & -2\gamma
+    \end{pmatrix}.
+    \]
+    Balance detallado: $\pi_0\cdot2\gamma=\pi_1\cdot\beta$ y $\pi_1\cdot\beta=\pi_2\cdot2\gamma$. Entonces $\pi_1=\frac{2\gamma}{\beta}\pi_0$, $\pi_2=\pi_0$. Normalizaci\'on: $\pi_0(1+\frac{2\gamma}{\beta}+1)=1\Rightarrow\pi_0=\frac{\beta}{2(\beta+\gamma)}$. Por tanto $\pi_1=\frac{\gamma}{\beta+\gamma}$, $\pi_2=\frac{\beta}{2(\beta+\gamma)}$. Fracci\'on con ambas operativas: $\pi_2=\frac{\beta}{2(\beta+\gamma)}$. Fracci\'on sin plena capacidad: $\pi_0+\pi_1=\frac{\beta}{2(\beta+\gamma)}+\frac{\gamma}{\beta+\gamma}=\frac{\beta+2\gamma}{2(\beta+\gamma)}$.
+
+    \subsection{Ejercicio 1.11 (Simulaci\'on en Python)}
+    \begin{lstlisting}[language=Python, caption=Simulaci\'on cadena de 3 estados]
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    def simular_cadena(alpha, beta, gamma, delta, T, x0=0):
+        t = 0.0
+        estado = x0
+        tiempos = [t]
+        estados = [estado]
+        while t < T:
+            if estado == 0:
+                tasa_salida = alpha
+                prob_saltos = [1.0]
+                destinos = [1]
+            elif estado == 1:
+                tasa_salida = beta + gamma
+                prob_saltos = [beta/(beta+gamma), gamma/(beta+gamma)]
+                destinos = [0, 2]
+            else: # estado 2
+                tasa_salida = delta
+                prob_saltos = [1.0]
+                destinos = [0]
+            dt = np.random.exponential(1/tasa_salida) if tasa_salida > 0 else np.inf
+            if t + dt > T:
+                tiempos.append(T)
+                estados.append(estado)
+                break
+            t += dt
+            siguiente = np.random.choice(destinos, p=prob_saltos)
+            tiempos.append(t)
+            estados.append(siguiente)
+            estado = siguiente
+        ocupacion = {i:0.0 for i in range(3)}
+        for i in range(len(tiempos)-1):
+            dur = tiempos[i+1] - tiempos[i]
+            ocupacion[estados[i]] += dur
+        for i in range(3):
+            ocupacion[i] /= T
+        return ocupacion, tiempos, estados
+
+    alpha, beta, gamma, delta = 1.0, 0.5, 1.0, 0.8
+    T = 1000.0
+    pi0 = 1 / (1 + alpha/(beta+gamma) + alpha*gamma/(delta*(beta+gamma)))
+    pi1 = pi0 * alpha/(beta+gamma)
+    pi2 = pi0 * alpha*gamma/(delta*(beta+gamma))
+    ocup, _, _ = simular_cadena(alpha,beta,gamma,delta,T)
+    print(f"Ocupacion simulada: {ocup}")
+    print(f"Invariante teorica: pi0={pi0:.4f}, pi1={pi1:.4f}, pi2={pi2:.4f}")
+    \end{lstlisting}
+
+    \subsection{Ejercicio 1.12 (Nacimiento--muerte con deriva)}
+    \begin{lstlisting}[language=Python, caption=Simulaci\'on nacimiento-muerte]
+    def simular_birth_death(lam, mu, T, x0=0):
+        t = 0.0
+        x = x0
+        tiempos = [t]
+        estados = [x]
+        while t < T:
+            tasa_total = lam + (mu if x>0 else 0)
+            dt = np.random.exponential(1/tasa_total)
+            if t+dt > T:
+                tiempos.append(T)
+                estados.append(x)
+                break
+            t += dt
+            if x == 0:
+                x += 1
+            else:
+                prob_nac = lam / tasa_total
+                if np.random.rand() < prob_nac:
+                    x += 1
+                else:
+                    x -= 1
+            tiempos.append(t)
+            estados.append(x)
+        return tiempos, estados
+    \end{lstlisting}
+
+    \section{Proceso de Poisson y sus extensiones elementales}
+
+    \subsection{Ejercicio 2.1}
+    La propiedad de incrementos independientes y estacionarios implica que $N_t\sim\Poisson(\lambda t)$. Prueba: sea $p_n(t)=\P(N_t=n)$. Por los incrementos, $p_0(t+s)=p_0(t)p_0(s)$, soluci\'on $p_0(t)=e^{-\lambda t}$. Luego derivando la ecuaci\'on de Chapman-Kolmogorov se obtiene $p_n'(t)=-\lambda p_n(t)+\lambda p_{n-1}(t)$, con $p_n(0)=\delta_{n0}$. Resolviendo por inducci\'on se llega a $p_n(t)=e^{-\lambda t}(\lambda t)^n/n!$. Funci\'on generadora: $\E[z^{N_t}]=e^{\lambda t(z-1)}$. Funci\'on caracter\'istica: $\phi_{N_t}(u)=e^{\lambda t(e^{iu}-1)}$.
+
+    \subsection{Ejercicio 2.2}
+    Los tiempos entre saltos $S_n=T_n-T_{n-1}$ son exponenciales i.i.d. de par\'ametro $\lambda$ porque el proceso es Poisson. Luego $T_n=\sum_{k=1}^n S_k$ tiene distribuci\'on Gamma$(n,\lambda)$ con densidad $f_{T_n}(t)=\lambda^n t^{n-1}e^{-\lambda t}/(n-1)!$. $\E[T_n]=n/\lambda$, $\Var(T_n)=n/\lambda^2$.
+
+    \subsection{Ejercicio 2.3}
+    Dado $\{N_t=n\}$, los tiempos de salto ordenados $0<T_1<\dots<T_n\le t$ tienen la misma distribuci\'on que los estad\'isticos de orden de $n$ uniformes i.i.d. en $[0,t]$. Esto se deduce de que la intensidad condicional es constante. Entonces
+    \[
+    \E\left[\sum_{k=1}^{N_t}h(T_k)\mid N_t=n\right]=n\E[h(U)]=n\cdot\frac1t\int_0^t h(s)\,ds,
+    \]
+    donde $U\sim\Uniform(0,t)$.
+
+    \subsection{Ejercicio 2.4 (Adelgazamiento)}
+    Sea $N_t^{(1)}$ el n\'umero de saltos marcados hasta $t$. Por la propiedad de adelgazamiento, $N^{(1)}$ es un proceso de Poisson con intensidad $\lambda p$, e independiente de $N^{(0)}$ (intensidad $\lambda(1-p)$). La prueba usa la independencia de las marcas y la descomposici\'on del proceso original.
+
+    \subsection{Ejercicio 2.5 (Superposici\'on)}
+    La suma de procesos de Poisson independientes es un proceso de Poisson con intensidad suma. La probabilidad condicional de que un salto dado provenga del $j$-\'esimo proceso es $\lambda_j/(\sum_i\lambda_i)$.
+
+    \subsection{Ejercicio 2.6 (Proceso de Poisson compuesto)}
+    Para $X_t=\sum_{k=1}^{N_t}Y_k$, con $N$ Poisson($\lambda$), $(Y_k)$ i.i.d. independientes, se tiene:
+    \[
+    \E[X_t]=\lambda t\E[Y_1],\quad \Var(X_t)=\lambda t\E[Y_1^2].
+    \]
+    Funci\'on caracter\'istica: $\phi_{X_t}(u)=\exp(\lambda t(\phi_{Y_1}(u)-1))$.
+
+    \subsection{Ejercicio 2.7}
+    El generador del proceso de Poisson es $Lf(n)=\lambda(f(n+1)-f(n))$. Las ecuaciones de Kolmogorov hacia adelante son $\frac{d}{dt}p_t(n)=\lambda p_t(n-1)-\lambda p_t(n)$, cuya soluci\'on es la distribuci\'on Poisson.
+
+    \subsection{Ejercicio 2.8}
+    $M_t=N_t-\lambda t$ es martingala porque $\E[N_t-\lambda t\mid\F_s]=N_s-\lambda s$. Para $\theta\in\R$, $Z_t^{(\theta)}=e^{\theta N_t-\lambda t(e^\theta-1)}$ es una martingala exponencial (se verifica $\E[Z_t^{(\theta)}|\F_s]=Z_s^{(\theta)}$). Estas martingalas se usan para cambios de medida.
+
+    \subsection{Ejercicio 2.9}
+    Por la propiedad de p\'erdida de memoria, $T_1$ es exponencial, y el proceso reiniciado $\tilde{N}_t=N_{T_1+t}-N_{T_1}$ es independiente de $\F_{T_1}$ y tiene la misma ley que $N$. Esto es la propiedad fuerte de Markov.
+
+    \subsection{Ejercicio 2.10}
+    Las clasificaciones independientes producen procesos de Poisson independientes para cada tipo. La probabilidad de que en $[0,t]$ haya al menos una de cada tipo es $(1-e^{-\lambda p_1t})(1-e^{-\lambda p_2t})(1-e^{-\lambda p_3t})$.
+
+    \subsection{Ejercicio 2.11 (Simulaci\'on)}
+    \begin{lstlisting}[language=Python]
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.stats import gamma
+
+    lam = 2.0
+    n_sim = 1000
+    n = 5
+    S = np.random.exponential(1/lam, size=(n_sim, n))
+    T_n = S.cumsum(axis=1)[:, -1]
+    x = np.linspace(0, max(T_n), 100)
+    plt.hist(T_n, bins=30, density=True, alpha=0.5)
+    plt.plot(x, gamma.pdf(x, a=n, scale=1/lam), 'r-')
+    plt.show()
+    print(f"Media empirica: {T_n.mean():.3f} (teorica {n/lam:.3f})")
+    print(f"Var empirica: {T_n.var():.3f} (teorica {n/lam**2:.3f})")
+    \end{lstlisting}
+
+    \subsection{Ejercicio 2.12 (Simulaci\'on adelgazamiento y superposici\'on)}
+    \begin{lstlisting}[language=Python]
+    lam = 3.0
+    p = 0.4
+    T = 10.0
+    N = np.random.poisson(lam*T)
+    saltos = np.sort(np.random.uniform(0, T, N))
+    marcas = np.random.rand(N) < p
+    N1 = np.cumsum(marcas)[-1]
+    N0 = N - N1
+    \end{lstlisting}
+
+    \section{Modelos de colas M/M/k y M/M/$\infty$}
+
+    \subsection{Ejercicio 3.1}
+    $X_t$ es cadena nacimiento--muerte con $\lambda_n=\lambda$ y $\mu_n=\mu\min\{n,k\}$. El generador $A(n,n+1)=\lambda$, $A(n,n-1)=\mu\min\{n,k\}$, $A(n,n)=-(\lambda+\mu\min\{n,k\})$. Ecuaciones de balance global: $\pi_n\lambda=\pi_{n+1}\mu\min\{n+1,k\}$.
+
+    \subsection{Ejercicio 3.2}
+    Resolviendo el balance detallado: para $n<k$, $\pi_{n+1}=\frac{\lambda}{\mu(n+1)}\pi_n$; para $n\ge k$, $\pi_{n+1}=\frac{\lambda}{\mu k}\pi_n$. As\'i,
+    \[
+    \pi_n = \pi_0\frac{(\lambda/\mu)^n}{n!}\ (0\le n\le k),\quad \pi_n = \pi_0\frac{(\lambda/\mu)^n}{k!k^{n-k}}\ (n\ge k).
+    \]
+    La normalizaci\'on requiere $\rho=\lambda/(k\mu)<1$. Si $\rho\ge1$, no hay distribuci\'on estacionaria (cola infinita).
+
+    \subsection{Ejercicio 3.3}
+    F\'ormula de Erlang C: $\P(C>0)=\frac{\frac{(\lambda/\mu)^k}{k!(1-\rho)}}{\sum_{n=0}^{k-1}\frac{(\lambda/\mu)^n}{n!}+\frac{(\lambda/\mu)^k}{k!(1-\rho)}}$. El tiempo medio de espera es $\E[C]=\frac{\P(C>0)}{k\mu(1-\rho)}$. Tiempo medio total: $\E[T]=\E[C]+\frac1\mu$. La ley de Little relaciona $L=\lambda\E[T]$.
+
+    \subsection{Ejercicio 3.4 (M/M/k/k)}
+    Sistema de p\'erdidas: $\pi_n=\pi_0\frac{(\lambda/\mu)^n}{n!}$, $0\le n\le k$, con $\pi_0=1/\sum_{n=0}^k\frac{(\lambda/\mu)^n}{n!}$. Probabilidad de bloqueo (Erlang B): $B(k,a)=\frac{a^k/k!}{\sum_{n=0}^k a^n/n!}$, $a=\lambda/\mu$.
+
+    \subsection{Ejercicio 3.5 (M/M/$\infty$)}
+    Tasas $\lambda_n=\lambda$, $\mu_n=n\mu$. Balance detallado: $\pi_n\lambda=\pi_{n+1}(n+1)\mu$, luego $\pi_n=\pi_0\frac{(\lambda/\mu)^n}{n!}$. Normalizando, $\pi_0=e^{-\lambda/\mu}$, as\'i $\pi_n\sim\Poisson(\lambda/\mu)$.
+
+    \subsection{Ejercicio 3.6}
+    Para $X_0=x$, la distribuci\'on en tiempo $t$ es suma de una binomial (clientes iniciales que a\'un no han terminado) y una Poisson (llegadas que han llegado y terminado despu\'es). En efecto, cada cliente inicial permanece con probabilidad $e^{-\mu t}$, independientemente, luego $Y_t\sim\Bin(x,e^{-\mu t})$. Las llegadas siguen un proceso de Poisson de tasa $\lambda$, y cada una que llega en $s$ termina despu\'es de $t-s$, de modo que el n\'umero de llegadas presentes es Poisson con media $\int_0^t\lambda e^{-\mu(t-s)}ds=\frac{\lambda}{\mu}(1-e^{-\mu t})$. Luego $X_t\stackrel{d}{=}Y_t+Z_t$, con $Z_t\sim\Poisson(\frac{\lambda}{\mu}(1-e^{-\mu t}))$ independiente. Entonces $\E[X_t]=xe^{-\mu t}+\frac{\lambda}{\mu}(1-e^{-\mu t})$, $\Var(X_t)=xe^{-\mu t}(1-e^{-\mu t})+\frac{\lambda}{\mu}(1-e^{-\mu t})$.
+
+    \subsection{Ejercicio 3.7}
+    Balance detallado $\pi_n\lambda=\pi_{n+1}(n+1)\mu$ se cumple con $\pi_n=e^{-\lambda/\mu}(\lambda/\mu)^n/n!$. La reversibilidad implica que la M/M/$\infty$ es invariante ante la inversi\'on del tiempo, propiedad importante para redes de Jackson.
+
+    \subsection{Ejercicio 3.8}
+    Para $G_\theta(n)=e^{\theta n}$, $LG_\theta(n)=\lambda(e^{\theta}-1)e^{\theta n}+\mu\min\{n,k\}(e^{-\theta}-1)e^{\theta n}$. Para $n\ge k$, $LG_\theta(n)=e^{\theta n}[\lambda(e^{\theta}-1)+k\mu(e^{-\theta}-1)]$. Tomando $\theta>0$ tal que $\lambda(e^{\theta}-1)+k\mu(e^{-\theta}-1)<0$ (posible si $\rho<1$), entonces $LG_\theta(n)\le -c e^{\theta n}$ para alg\'un $c>0$ y $n$ grande. Esto da una condici\'on de Foster-Lyapunov y ergodicidad geom\'etrica.
+
+    \subsection{Ejercicio 3.9}
+    En equilibrio, el flujo de entrada $\lambda$ debe ser igual al flujo de servicio esperado: $\E_\pi[\mu\min\{X_t,k\}]=\lambda$. Luego $\mu\E_\pi[\min\{X,k\}]=\lambda$, es decir, $\E_\pi[\min\{X,k\}]=\lambda/\mu$. La fracci\'on de tiempo que un servidor est\'a ocupado es $\E_\pi[\min\{X,k\}]/k=\lambda/(k\mu)=\rho$.
+
+    \subsection{Ejercicio 3.10}
+    $\lambda=6$ por hora, $\mu=3$ por hora (20 minutos = 1/3 hora). $k$ debe satisfacer $\lambda/(k\mu)<1\Rightarrow 6/(3k)<1\Rightarrow k>2$, luego $k=3$. La distribuci\'on estacionaria se calcula con las f\'ormulas del M/M/3. El modelo M/M/$\infty$ ser\'ia una aproximaci\'on si el n\'umero de servidores es muy grande, pero aqu\'i $k=3$ es peque\~no, luego la p\'erdida por espera es importante.
+
+    \subsection{Ejercicio 3.11 (Simulaci\'on)}
+    \begin{lstlisting}[language=Python, caption=Simulador M/M/k]
+    import numpy as np
+
+    class MMC:
+        def __init__(self, lam, mu, k):
+            self.lam = lam
+            self.mu = mu
+            self.k = k
+            self.t = 0.0
+            self.cola = 0
+            self.servidores_ocupados = 0
+            self.eventos = []
+            self.tiempos_espera = []
+        def run(self, T):
+            t_prox_llegada = np.random.exponential(1/self.lam)
+            while self.t < T:
+                t_prox_salida = min(self.eventos) if self.eventos else np.inf
+                if t_prox_llegada < t_prox_salida:
+                    self.t = t_prox_llegada
+                    if self.servidores_ocupados < self.k:
+                        self.servidores_ocupados += 1
+                        t_serv = np.random.exponential(1/self.mu)
+                        self.eventos.append(self.t + t_serv)
+                    else:
+                        self.cola += 1
+                    t_prox_llegada = self.t + np.random.exponential(1/self.lam)
+                else:
+                    self.t = t_prox_salida
+                    self.eventos.remove(t_prox_salida)
+                    if self.cola > 0:
+                        self.cola -= 1
+                        t_serv = np.random.exponential(1/self.mu)
+                        self.eventos.append(self.t + t_serv)
+                    else:
+                        self.servidores_ocupados -= 1
+    \end{lstlisting}
+
+    \subsection{Ejercicio 3.12 (Simulaci\'on M/M/$\infty$)}
+    Se simulan trayectorias, se compara la distribuci\'on emp\'irica con la te\'orica $Y_t+Z_t$, y se observa la convergencia a Poisson($\lambda/\mu$).
+
+    \section{Optimal stopping para cadenas de Markov}
+
+    \subsection{Ejercicio 4.1 (Recursi\'on de Bellman)}
+    Para horizonte finito $N$, definimos $V_n(x)=\sup_{\tau\in\mathcal{F}_{n,N}}\E_x[g(X_\tau)]$. Por inducci\'on hacia atr\'as: $V_N(x)=g(x)$. Para $n<N$, si paramos en $n$ obtenemos $g(x)$; si continuamos, elegimos un tiempo de paro $\tau\ge n+1$, y por la propiedad de Markov, $\E_x[g(X_\tau)]=\E_x[\E_{X_{n+1}}[g(X_{\tau})]]\le \E_x[V_{n+1}(X_{n+1})]= (PV_{n+1})(x)$. Luego $V_n(x)=\max\{g(x),(PV_{n+1})(x)\}$.
+
+    \subsection{Ejercicio 4.2}
+    El conjunto de paro $D_n=\{x:g(x)\ge (PV_{n+1})(x)\}$ y el tiempo $\tau^*=\inf\{n\le N:X_n\in D_n\}$ es \'optimo. Es el an\'alogo del sobre de Snell.
+
+    \subsection{Ejercicio 4.3 (Caminata sesgada)}
+    Con descuento $e^{-\alpha n}$ y ganancia $(K-x)^+$. El valor $v(x)$ satisface la ecuaci\'on variacional:
+    \[
+    v(x)=\max\left\{(K-x)^+,\;e^{-\alpha}(p\,v(x+1)+q\,v(x-1))\right\}.
+    \]
+    La soluci\'on esperada es de tipo umbral: existe $x^*$ tal que se para si $x\le x^*$.
+
+    \subsection{Ejercicio 4.4}
+    Para $h(x)=\E_x[r^{\tau_A}]$, con $0<r\le1$, se cumple $h(x)=1$ en $A$, y para $x\notin A$,
+    \[
+    h(x)=r\sum_y P(x,y)h(y).
+    \]
+    Es la menor soluci\'on no negativa (por las propiedades de la medida de Green).
+
+    \subsection{Ejercicio 4.5 (Identidad de Dynkin)}
+    $M_n=f(X_n)-f(X_0)-\sum_{j=0}^{n-1}(Pf-f)(X_j)$ es martingala. Para $\tau$ acotado, usando el teorema de paro opcional,
+    \[
+    \E_x[f(X_\tau)]=f(x)+\E_x\left[\sum_{j=0}^{\tau-1}(Pf-f)(X_j)\right].
+    \]
+    Esto se usa en problemas de stopping para caracterizar funciones de valor.
+
+    \subsection{Ejercicio 4.6 (Reemplazo de m\'aquina a tiempo continuo)}
+    La ecuaci\'on variacional es $\max\{g(x), LV(x)-\alpha V(x)\}=0$. En espacio de estados numerable, $LV(x)=\sum_{y\neq x}\alpha(x,y)(V(y)-V(x))$. La regi\'on de paro es $\{x:g(x)\ge LV(x)-\alpha V(x)\}$ y suele ser un umbral cuando $g$ es mon\'otona.
+
+    \subsection{Ejercicio 4.7 (Caminata con absorbentes)}
+    $S=\{0,1,\dots,m\}$ con $0$ y $m$ absorbentes. Ganancia $g(i)=i$. Se quiere maximizar $\E_i[X_\tau]$. Si $p>q$, la caminata tiene deriva positiva; conviene esperar hasta llegar a $m$ (valor m\'aximo). Si $p<q$, conviene parar de inmediato (el estado actual es la mejor expectativa). Si $p=q$, cualquier tiempo de paro que pare en la frontera da el mismo valor esperado (por martingala). La soluci\'on \'optima es $\tau^*=\inf\{n:X_n\in\{0,m\}\}$ si $p\ge q$, y $\tau^*=0$ si $p<q$.
+
+    \subsection{Ejercicio 4.8 (Iteraci\'on del operador de Bellman)}
+    El operador $T$ es mon\'otono y contractivo (para descuento), luego la iteraci\'on $u_{n+1}=Tu_n$ converge al valor $v$ del problema de stopping \'optimo infinito. Si no hay descuento y $S$ finito, tambi\'en converge (pero puede haber m\'ultiples puntos fijos; la m\'inima soluci\'on positiva es la correcta).
+
+    \subsection{Ejercicio 4.9 (Costo de espera)}
+    Con costo $c(x)$ por periodo, la ecuaci\'on de Bellman es $v(x)=\max\{g(x), -c(x)+\sum_y P(x,y)v(y)\}$. El costo reduce la regi\'on de continuaci\'on, pues esperar tiene un costo instant\'aneo.
+
+    \subsection{Ejercicio 4.10 (Venta de activo)}
+    $g(i)=i-K$, descuento $\beta$. La ecuaci\'on $v(i)=\max\{i-K,\beta(Pv)(i)\}$. Si $v$ es creciente, la regi\'on de paro es $\{i\ge i^*\}$, donde $i^*$ es el menor $i$ tal que $i-K\ge\beta(Pv)(i)$. El umbral satisface $i^*=K+\beta\E[v(X_{i^*+1})]$, usualmente mayor que $K$ por el valor de opci\'on.
+
+    \subsection{Ejercicio 4.11 (Simulaci\'on)}
+    \begin{lstlisting}[language=Python, caption=Iteraci\'on de Bellman]
+    def bellman_finito(P, g, N):
+        V = [g.copy()]
+        D = []
+        for n in range(N-1, -1, -1):
+            PV = np.dot(P, V[-1])
+            newV = np.maximum(g, PV)
+            V.append(newV)
+            D.append(newV > PV)
+        V.reverse()
+        D.reverse()
+        return V, D
+    \end{lstlisting}
+
+    \subsection{Ejercicio 4.12 (Simulaci\'on Monte Carlo para umbral)}
+    C\'odigo que simula la pol\'itica de umbral, estima la ganancia media descontada, y compara con el valor \'optimo obtenido por programaci\'on din\'amica, confirmando la optimalidad de la regla de barrera.
+
+    \section{Martingalas asociadas y cambios de medida}
+
+    \subsection{Ejercicio 5.1}
+    Para una cadena a tiempo continuo, $M_t^f=f(X_t)-f(X_0)-\int_0^t Lf(X_s)ds$ es martingala. Esto se deduce de la ecuaci\'on de Dynkin. Aplicando a $f(n)=n$ en el proceso de Poisson, $Lf(n)=\lambda$, luego $M_t=N_t-\lambda t$ es martingala. Para $f(n)=n^2$, $Lf(n)=\lambda(2n+1)$, entonces $M_t=N_t^2-\int_0^t\lambda(2N_s+1)ds$ es martingala.
+
+    \subsection{Ejercicio 5.2}
+    La variaci\'on cuadr\'atica previsible de $M_t=N_t-\lambda t$ es $\langle M\rangle_t=\lambda t$ (compensador). La variaci\'on cuadr\'atica opcional es $[M]_t=N_t$ (suma de cuadrados de saltos). Luego $M_t^2-N_t$ es martingala porque $M_t^2-\langle M\rangle_t$ es martingala y $\langle M\rangle_t=\lambda t$, pero $N_t$ no es $\lambda t$ sino que la diferencia es martingala.
+
+    \subsection{Ejercicio 5.3 (Transformaci\'on $h$)}
+    Si $Lf=\lambda_f f$, entonces $Z_t=e^{-\lambda_f t}f(X_t)/f(X_0)$ es martingala positiva. Definiendo $\frac{d\P^{(f)}}{d\P}|_{\F_t}=Z_t$, bajo $\P^{(f)}$ el proceso sigue siendo Markov con generador $L^{(f)}g = \frac1f L(fg)-\lambda_f g$. Esto es la transformada de Doob.
+
+    \subsection{Ejercicio 5.4}
+    $Z_t^{(\theta)}=\exp(\theta N_t-\lambda t(e^\theta-1))$ es martingala exponencial. Bajo $Q^{(\theta)}$, $N$ es Poisson con intensidad $\lambda e^\theta$. Esto se prueba mediante la funci\'on generadora: $\E_{Q^{(\theta)}}[e^{u N_t}]=\E_P[Z_t^{(\theta)}e^{u N_t}]=\exp(\lambda t(e^{\theta+u}-1)-\lambda t(e^\theta-1))=\exp(\lambda e^\theta t(e^u-1))$.
+
+    \subsection{Ejercicio 5.5}
+    Para $X_t=N^+_t-N^-_t$, con $N^+,N^-$ Poisson independientes de tasas $\alpha,\beta$, se tiene la martingala
+    \[
+    Z_t^{(\theta)}=\exp(\theta X_t-t[\alpha(e^\theta-1)+\beta(e^{-\theta}-1)]).
+    \]
+    El cambio de medida produce tasas $\alpha e^\theta$ y $\beta e^{-\theta}$.
+
+    \subsection{Ejercicio 5.6 (M/M/$\infty$)}
+    No existe martingala de la forma $e^{\theta X_t-\psi(\theta)t}$ porque el generador no es lineal en $X_t$. Sin embargo, se pueden construir martingalas polin\'omicas. Por ejemplo, $\E[X_t|\F_s]=X_s e^{-\mu(t-s)}+\frac{\lambda}{\mu}(1-e^{-\mu(t-s)})$, luego $M_t=e^{\mu t}X_t-\frac{\lambda}{\mu}(e^{\mu t}-1)$ es martingala. Para segundo orden, $M_t^{(2)}=X_t^2-\frac{\lambda}{\mu}(2X_t+1)+\dots$ se puede ajustar.
+
+    \subsection{Ejercicio 5.7 (Tiempo de entrada)}
+    La funci\'on $u(x)=\E_x[\tau_A]$ satisface $Lu(x)=-1$ para $x\notin A$, $u(x)=0$ para $x\in A$, soluci\'on \'unica bajo condiciones de recurrencia positiva.
+
+    \subsection{Ejercicio 5.8 (Funci\'on de Lyapunov)}
+    Si $LV(x)\le -cV(x)+b\1_C(x)$, entonces $M_t=V(X_t)-V(X_0)-\int_0^t LV(X_s)ds$ es martingala. Tomando esperanzas, se obtienen cotas para los tiempos de retorno a $C$.
+
+    \subsection{Ejercicio 5.9}
+    Para $\tau_a=\inf\{t:M_t\ge a\}$, con $M_t=N_t-\lambda t$. Aplicando el teorema de paro opcional a $M_{t\wedge\tau_a}$, se tiene $\E[M_{t\wedge\tau_a}]=0$. Haciendo $t\to\infty$, si $\tau_a$ es finito c.s., $M_{\tau_a}=a$ en el instante del salto, pero hay que tener cuidado con el overshoot. Se obtiene $\E[\tau_a]=\frac{\E[N_{\tau_a}]}{\lambda}$.
+
+    \subsection{Ejercicio 5.10 (Riesgo y martingala exponencial)}
+    La condici\'on $c\theta-\lambda(\E[e^{\theta Y_1}]-1)=0$ implica que $Z_t=e^{-\theta R_t}$ es martingala. Esta martingala se usa para calcular probabilidades de ruina: $\P(\inf_t R_t<0)\le e^{-\theta u}$ (desigualdad de Lundberg).
+
+    \subsection{Ejercicio 5.11 (Simulaci\'on martingala compensada)}
+    \begin{lstlisting}[language=Python]
+    lam = 2.0
+    T = 5.0
+    dt = 0.01
+    t = np.arange(0, T, dt)
+    N = np.random.poisson(lam*dt, size=len(t)).cumsum()
+    M = N - lam*t
+    \end{lstlisting}
+
+    \subsection{Ejercicio 5.12 (Simulaci\'on cambio de medida)}
+    Se simulan trayectorias de $N_t$ bajo $\P$, se calculan los pesos $Z_T^{(\theta)}$, y se estima la distribuci\'on bajo $Q^{(\theta)}$ mediante remuestreo ponderado, verificando que coincide con Poisson de media $\lambda e^\theta T$.
+
+    
+    
+
+\end{document}

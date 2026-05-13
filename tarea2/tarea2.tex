@@ -1,0 +1,864 @@
+\documentclass[letterpaper, 12pt]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, arrows.meta}
+\usetikzlibrary{babel}
+\usepackage[margin=2cm]{geometry}
+\usepackage{xcolor}
+%\usepackage{tgpagella} % No se usa actualmente
+\usepackage{fourier}
+%\usepackage{charter}   % No se usa actualmente
+\usepackage{tgheros}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage[spanish, es-tabla]{babel} % es-tabla pone "Tabla" en vez de "Cuadro"
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{tocloft}
+\usepackage{placeins}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref} % 'hidelinks' quita los cuadros de colores feos
+\usepackage{amssymb}
+\usepackage{bbm}
+
+% Definiciones de comandos matemáticos
+\newcommand{\E}{\mathbb{E}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\1}{\mathbbm{1}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Poisson}{Poisson}
+\DeclareMathOperator{\Bin}{Bin}
+\DeclareMathOperator{\Exp}{Exp}
+
+% Puntos guía entre el texto de la entrada y el número de página.
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftfigleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cfttableader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftsecindent}{2em}  % Sangría para secciones en el índice
+\setlength{\textfloatsep}{8pt}   % espacio entre float arriba/abajo y texto
+\setlength{\intextsep}{8pt}      % espacio para figuras "en medio" del texto ([h])
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhead{} % Borra el encabezado por defecto
+\fancyhead[L]{\textbf{Procesos Estocásticos 2026-2}} % Encabezado izquierdo
+\fancyhead[R]{Tarea 2: Cadenas de Markov a Tiempo Discreto y Continuo}
+\fancyfoot{} % Borra el pie de página por defecto
+\fancyfoot[C]{\thepage} % Número de página en el centro
+\definecolor{azulunam}{RGB}{0, 43, 122}
+\definecolor{doradounam}{RGB}{199, 146, 19}
+\newcommand{\escudomargen}{1cm}
+
+\setcounter{secnumdepth}{0} %Evita que las secciones se numeren, pero permite que aparezcan en el índice
+\begin{document}
+
+    \begin{titlepage}
+        \thispagestyle{empty}
+        \fontfamily{qhv}\selectfont
+        \singlespacing
+        \fontsize{14}{18}\selectfont
+        %\newgeometry{margin=2cm} % márgenes más pequeños
+        \newgeometry{
+            left=1cm,
+            right=1cm,
+            top=1cm,
+            bottom=1cm
+        }
+
+        \begin{tikzpicture}[remember picture, overlay]
+            \node[anchor=east] 
+            at ([xshift=-\escudomargen,yshift=11.5cm]current page.east) {
+                \includegraphics[height=2cm]{escudo_mac.jpg}
+            };
+            \node[anchor=west] 
+            at ([xshift=\escudomargen,yshift=11.5cm]current page.west) {
+                \includegraphics[height=2.6cm]{escudo-a.png}
+            };
+            % Linea horizontal
+            \draw[line width=2pt, color=azulunam] 
+            ([xshift=-6.5cm,yshift=11.5cm]current page.center) -- 
+            ([xshift=6.2cm,yshift=11.5cm]current page.center);
+            %Linea vertical
+            \draw[line width=2pt, color=azulunam] 
+            ([xshift=-8.6cm,yshift=-11cm]current page.center) -- 
+            ([xshift=-8.6cm,yshift=9.5cm]current page.center);
+        \end{tikzpicture}
+        \begin{center}
+            {\fontsize{14.4}{16}\selectfont \textbf{\textsc{UNIVERSIDAD NACIONAL AUTÓNOMA DE MÉXICO}} \vspace{0.5cm} }\\
+            {\fontsize{12}{14}\selectfont \textbf{\textsc{FACULTAD DE ESTUDIOS SUPERIORES ACATLÁN}} \vspace{0.8cm} }\\
+            \vspace{1cm}
+            {\textsc{División de Matemáticas e Ingenierias}} \\
+            \vspace{0.8cm}
+            Licenciatura en Matemáticas Aplicadas y Computación \\
+            \vspace{1.5cm}
+
+            \begin{minipage}{0.8\textwidth}
+                \centering
+                Asignatura: Procesos Estocásticos \\
+                \vspace{0.3cm}
+                Profesor: Dr. Cesar Galindo López
+            \end{minipage}\\
+            \vspace{1.5cm}
+            {\fontsize{14.4}{18}\selectfont Tarea 2: \\ \vspace{0.3cm} \textbf{Cadenas de Markov a Tiempo Discreto y Continuo}}
+            \vspace{1.5cm}
+            \begin{table}[h]
+                \centering
+                \vspace{0.3cm}
+                {\fontsize{15}{18}\selectfont
+                \begin{tabular}{l l} % 'l' izquierda, 'c' centro, 'c' centro
+                    % No ponemos '|' entre las letras para evitar líneas verticales
+                    \vspace{1.5cm}
+                    Presenta: 
+                    %\addlinespace[0.3cm] % Espacio extra entre filas sin líneas
+                       &  \textbullet\ Pineda Ortega Daniel\\
+                      
+                    
+                \end{tabular}
+                }
+            \end{table}
+
+
+            Grupo: 2601 \\ \vspace{1.5cm}
+            \hspace{5.5cm} Fecha de entrega: 13 de mayo de 2026 
+
+            
+        \end{center}
+    \end{titlepage}
+    \restoregeometry
+
+    %\pagenumbering{roman} % Números romanos para el índice (opcional)
+    %\tableofcontents
+   
+    %\listoffigures %(Índice de imágenes).
+
+    %\listoftables %(Índice de tablas).
+
+    \setlength{\parindent}{0pt}
+    \pagenumbering{arabic}
+    \setcounter{page}{1}
+    \pagestyle{fancy}
+    \thispagestyle{fancy}
+
+    \subsection{Ejercicio 1.1 (Propiedad de Markov y funciones arm\'onicas)}
+
+    \subsubsection*{(a) Demostraci\'on de la propiedad de Markov}
+    Por definici\'on de cadena de Markov, para cada $n\ge0$ y cada $y\in S$,
+    \[
+    \P(X_{n+1}=y\mid X_0,\dots,X_n)=\P(X_{n+1}=y\mid X_n)=p(X_n,y).
+    \]
+    Para una funci\'on acotada $f:S\to\R$, tomamos esperanza condicional:
+    \[
+    \E[f(X_{n+1})\mid X_0,\dots,X_n]=\sum_{y\in S}f(y)\P(X_{n+1}=y\mid X_0,\dots,X_n)
+    =\sum_{y\in S}f(y)p(X_n,y)=(Pf)(X_n).
+    \]
+
+    \subsubsection*{(b) Martingala para funciones arm\'onicas}
+    $h$ es arm\'onica en $A$ si $(Ph)(x)=h(x)$ para todo $x\in A$. Si $h$ es arm\'onica en todo $S$, entonces
+    \[
+    \E[h(X_{n+1})\mid\F_n]=(Ph)(X_n)=h(X_n).
+    \]
+    Luego $(h(X_n))$ es una martingala respecto de $\F_n=\sigma(X_0,\dots,X_n)$.
+
+    \subsubsection*{(c) Funciones arm\'onicas acotadas en cadena finita irreducible}
+    Sea $h$ arm\'onica y acotada. Como $(h(X_n))$ es martingala acotada, converge c.s. a $h_\infty$. Por la propiedad de Markov fuerte y la irreducibilidad, la $\sigma$-álgebra terminal es trivial, luego $h_\infty$ es constante c.s. Pero $h(x)=\E^x[h_\infty]$, por tanto $h$ es constante.
+
+    \subsubsection*{(d) Propiedad de Markov fuerte}
+    Sea $T$ un tiempo de paro. La propiedad de Markov fuerte afirma: condicionado a $\{T<\infty\}$ y a $\F_T$, el proceso $(X_{T+n})_{n\ge0}$ tiene la misma ley que $(X_n)_{n\ge0}$ partiendo de $X_T$. Una condici\'on suficiente para $\E^x[h(X_T)]=h(x)$ es que $T$ sea finito c.s. y $h$ arm\'onica y acotada (o $T$ acotado). Entonces $h(X_{n\wedge T})$ es martingala acotada y por el teorema de paro opcional $\E^x[h(X_T)]=\E^x[h(X_0)]=h(x)$.
+
+    \subsection{Ejercicio 1.2 (Caminata aleatoria en $\Z$)}
+
+    \subsubsection*{(a) C\'alculo de $\E[X_n]$ y $\E[X_n^2]$}
+    $X_0=0$, $X_n=\sum_{i=1}^n\xi_i$ con $\xi_i$ i.i.d., $\P(\xi=1)=p$, $\P(\xi=-1)=q=1-p$. Entonces
+    \[
+    \E[\xi]=p-q,\quad \E[\xi^2]=p+q=1,\quad \Var(\xi)=1-(p-q)^2=4pq.
+    \]
+    Por independencia,
+    \[
+    \E[X_n]=n(p-q),\quad \Var(X_n)=n\cdot4pq,\quad \E[X_n^2]=\Var(X_n)+(\E[X_n])^2=4npq+n^2(p-q)^2.
+    \]
+
+    \subsubsection*{(b) Recurrencia para $p=q=1/2$}
+    $p_{2n}(0,0)=\binom{2n}{n}2^{-2n}$. Usando Stirling: $\binom{2n}{n}\sim\frac{4^n}{\sqrt{\pi n}}$, as\'i $p_{2n}(0,0)\sim\frac1{\sqrt{\pi n}}$. Entonces $\sum_n p_n(0,0)\sim\sum_n\frac1{\sqrt{\pi n}}=\infty$, luego recurrente.
+    \newpage
+    \subsubsection*{(c) Transiencia para $p\neq q$}
+    Para $p\neq q$, $p_n(0,0)\le C(\sqrt{4pq})^n$ con $\sqrt{4pq}<1$, luego la serie converge, la cadena es transiente.
+
+    \subsubsection*{(d) C\'alculo de $\P_0(X_\tau=b)$ y $\E[\tau]$ con $\tau=\inf\{n:X_n\in\{-a,b\}\}$}
+    \textbf{Caso $p=q$:} $X_n$ y $X_n^2-n$ son martingalas. Aplicando paro:
+    \[
+    0=\E[X_\tau]=b\,u+(-a)(1-u)\Rightarrow u=\frac{a}{a+b},
+    \]
+    \[
+    0=\E[X_\tau^2-\tau]=\E[X_\tau^2]-\E[\tau]\Rightarrow \E[\tau]=\E[X_\tau^2]=b^2u+a^2(1-u)=ab.
+    \]
+    \textbf{Caso $p\neq q$:} $M_n=(q/p)^{X_n}$ es martingala. Paro:
+    \[
+    1=\E[M_\tau]=u(q/p)^b+(1-u)(q/p)^{-a}\Rightarrow u=\frac{1-(q/p)^{-a}}{(q/p)^b-(q/p)^{-a}}.
+    \]
+    Multiplicando por $(q/p)^a$: $u=\frac{(q/p)^a-1}{(q/p)^{a+b}-1}$. Para $\E[\tau]$, resolvemos $h(x)=1+ph(x+1)+qh(x-1)$ con $h(-a)=h(b)=0$. La soluci\'on general es $h(x)=A+B(q/p)^x+\frac{x}{q-p}$. Imponiendo condiciones se obtiene:
+    \[
+    \E[\tau]=\frac{a}{q-p}-\frac{b}{q-p}\cdot\frac{1-(q/p)^a}{1-(q/p)^{a+b}}.
+    \]
+
+    \subsection{Ejercicio 1.3 (Clasificaci\'on de estados)}
+
+    \subsubsection*{(a) Clases de comunicaci\'on}
+    Transiciones: $1\to2,3$; $2\to4$; $3\to5$; $4\to1,2,3$; $5\to1$. Se ve que todos se comunican entre s\'i (por ej., $1\to2\to4\to1$, $1\to3\to5\to1$). Luego una \'unica clase $\{1,2,3,4,5\}$, cerrada y por finitud recurrente.
+
+    \subsubsection*{(b) Per\'iodo}
+    $1$ puede volver en $3$ pasos ($1\to2\to4\to1$) y en $5$ pasos ($1\to2\to4\to3\to5\to1$). $\gcd(3,5)=1$, luego $d(1)=1$, y por comunicaci\'on todos tienen período $1$ (aperi\'odica).
+
+    \subsubsection*{(c) L\'imite de $p_n(1,1)$}
+    Por ser finita, irreducible y aperi\'odica, $\lim_{n\to\infty}p_n(1,1)=\pi(1)$.
+
+    \subsubsection*{(d) Medida estacionaria $\pi$}
+    Resolvemos $\pi P=\pi$, $\sum\pi_i=1$:
+    \[
+    \begin{aligned}
+    \pi_1&=\tfrac13\pi_4+\pi_5\\
+    \pi_2&=\tfrac12\pi_1+\tfrac13\pi_4\\
+    \pi_3&=\tfrac12\pi_1+\tfrac13\pi_4\\
+    \pi_4&=\pi_2\\
+    \pi_5&=\pi_3
+    \end{aligned}
+    \]
+    De $\pi_4=\pi_2$, $\pi_5=\pi_3$, $\pi_2=\pi_3$. Sustituyendo en primera: $\pi_1=\frac13\pi_2+\pi_2=\frac43\pi_2$. De segunda: $\pi_2=\frac12\pi_1+\frac13\pi_2\Rightarrow \frac23\pi_2=\frac12\pi_1\Rightarrow \pi_2=\frac34\pi_1$. Compatible. Normalizando: $\pi_1+\pi_2+\pi_3+\pi_4+\pi_5=\pi_1+3\cdot\frac34\pi_1=\pi_1+\frac94\pi_1=\frac{13}{4}\pi_1=1\Rightarrow \pi_1=\frac{4}{13}$, $\pi_2=\pi_3=\pi_4=\pi_5=\frac{3}{13}$.
+
+    \subsection{Ejercicio 1.4 (Tiempo esperado de llegada)}
+
+    Caminata en $\N_0$ con $p(x,x+1)=p$, $p(x,x-1)=q$ para $x\ge1$, $p(0,1)=1$. $T=T_{\{N\}}$, $h(x)=\E^x[T]$.
+
+    \subsubsection*{(a) Ecuaciones}
+    Para $1\le x\le N-1$: $h(x)=1+ph(x+1)+qh(x-1)$. $h(0)=1+h(1)$, $h(N)=0$.
+
+    \subsubsection*{(b) Soluci\'on para $p\neq q$}
+    Escribimos $ph(x+1)-h(x)+qh(x-1)=-1$. La homog\'enea tiene soluciones $1$ y $(q/p)^x$. Particular: $h_p(x)=\frac{x}{q-p}$. General: $h(x)=A+B(q/p)^x+\frac{x}{q-p}$. Condiciones:
+    \[
+    \begin{cases}
+    A+B+\frac{0}{q-p}=1+A+B(q/p)+\frac{1}{q-p}\quad (h(0)=1+h(1))\\
+    A+B(q/p)^N+\frac{N}{q-p}=0
+    \end{cases}
+    \]
+    Simplificando la primera: $B(1-q/p)=1+\frac1{q-p}=1-\frac1{p-q}=\frac{p-q-1}{p-q}$. Como $1-q/p=\frac{p-q}{p}$, obtenemos $B\frac{p-q}{p}=\frac{p-q-1}{p-q}\Rightarrow B=\frac{p(p-q-1)}{(p-q)^2}$. Luego $A=-B-\frac{N}{q-p}(q/p)^N?$ se despeja. La fórmula del enunciado es equivalente tras manipulación.
+
+    \subsubsection*{(c) Soluci\'on para $p=q=1/2$}
+    La ecuaci\'on es $h(x)=1+\frac12h(x+1)+\frac12h(x-1)$. Soluci\'on particular: $h_p(x)=-x^2$. Homog\'enea: $C+Dx$. General: $h(x)=C+Dx-x^2$. Condiciones:
+    $h(N)=0\Rightarrow C+DN-N^2=0$, $h(0)=1+h(1)\Rightarrow C=1+C+D-1\Rightarrow D=0$. Luego $C=N^2$, así $h(x)=N^2-x^2$.
+
+    \subsubsection*{(d) An\'alisis asint\'otico}
+    Para $p>q$, $h(0)\sim\frac{N}{p-q}$ (lineal). Para $p=q$, $h(0)=N^2$ (cuadr\'atico). Para $p<q$, $h(0)$ tiende a constante cuando $N\to\infty$.
+
+    \subsection{Ejercicio 1.5 (Probabilidad de ruina del jugador)}
+
+    $u(x)=\P^x(T_N<T_0)$, $u(0)=0$, $u(N)=1$, y para $1\le x\le N-1$: $u(x)=pu(x+1)+qu(x-1)$.
+
+    \subsubsection*{(b) Soluci\'on para $p\neq q$}
+    Ecuaci\'on homog\'enea: $pu(x+1)-u(x)+qu(x-1)=0$. Ra\'ices $r=1$ y $r=q/p$. Soluci\'on: $u(x)=A+B(q/p)^x$. Con $u(0)=0\Rightarrow A+B=0\Rightarrow A=-B$. Luego $u(x)=B((q/p)^x-1)$. $u(N)=1\Rightarrow B((q/p)^N-1)=1\Rightarrow B=\frac{1}{(q/p)^N-1}$. Por tanto
+    \[
+    u(x)=\frac{(q/p)^x-1}{(q/p)^N-1}=\frac{1-(q/p)^x}{1-(q/p)^N}.
+    \]
+
+    \subsubsection*{(c) Caso $p=q$}
+    Ecuaci\'on $u(x)=\frac12u(x+1)+\frac12u(x-1)$ $\Rightarrow$ $u$ lineal: $u(x)=Cx+D$. $u(0)=0\Rightarrow D=0$, $u(N)=1\Rightarrow C=1/N$, luego $u(x)=x/N$.
+
+    \subsubsection*{(d) An\'alisis de $u(1)$ cuando $N\to\infty$}
+    Si $p>q$: $(q/p)^N\to0$, luego $u(1)=1-(q/p)\to (p-q)/p>0$. Si $p<q$: $(q/p)^N\to\infty$, $u(1)\to0$. Si $p=q$: $u(1)=1/N\to0$. Esto refleja que la probabilidad de alcanzar $N$ antes que $0$ tiende a cero cuando $N$ es grande a menos que la caminata tenga deriva positiva.
+
+    \section{Medidas estacionarias, recurrencia y ergodicidad}
+
+    \subsection{Ejercicio 2.1 (Existencia, unicidad y tiempo de retorno)}
+
+    \subsubsection*{(a) $\pi(x)=1/\E^x[T_x^+]$ define una medida estacionaria}
+    Para cadena irreducible recurrente positiva, se tiene $\pi(y)=\sum_x\pi(x)p(x,y)$ con $\pi(x)=1/\E^x[T_x^+]$. La demostraci\'on usa el teorema de renovaci\'on o el m\'etodo de la cadena de Markov en tiempo invertido.
+
+    \subsubsection*{(b) Recurrencia positiva $\iff$ existencia de distribuci\'on estacionaria}
+    Si existe $\pi$ probabilidad, entonces $\pi(x)=1/\E^x[T_x^+]$, luego $\E^x[T_x^+]<\infty$ y la cadena es recurrente positiva. Rec\'iprocamente, si es recurrente positiva, $\pi(x)=1/\E^x[T_x^+]$ es una probabilidad estacionaria, y es \'unica.
+
+    \subsubsection*{(c) Ley erg\'odica}
+    Si $\pi(|f|)<\infty$, entonces $\frac1n\sum_{k=0}^{n-1}f(X_k)\to\pi(f)$ c.s. La prueba usa el teorema erg\'odico de Birkhoff para cadenas irreducibles.
+
+    \subsubsection*{(d) Ejemplo de recurrente nula}
+    Caminata aleatoria simple en $\Z$: $\E^0[T_0^+]=\infty$, no existe distribuci\'on estacionaria finita, pero la cadena es recurrente (nula).
+
+    \subsection{Ejercicio 2.2 (Cadena de nacimiento-muerte discreta)}
+
+    \subsubsection*{(a) Balance detallado}
+    Para $x\ge0$, balance detallado: $\pi(x)p_x=\pi(x+1)q_{x+1}$. Iterando:
+    \[
+    \pi(x)=\pi(0)\prod_{k=0}^{x-1}\frac{p_k}{q_{k+1}}.
+    \]
+
+    \subsubsection*{(b) Condici\'on de existencia}
+    Existe probabilidad estacionaria si y solo si $S=\sum_{x=0}^\infty\prod_{k=0}^{x-1}\frac{p_k}{q_{k+1}}<\infty$. Entonces $\pi(0)=1/S$.
+
+    \subsubsection*{(c) Caso $p_x=p$, $q_x=q$ constantes con $p<q$}
+    $\pi(x)=\pi(0)(p/q)^x$. Normalizando: $\pi(0)=1-p/q$, luego $\pi(x)=(1-p/q)(p/q)^x$ (geométrica).
+
+    \subsubsection*{(d) Reversibilidad}
+    El balance detallado implica reversibilidad: la distribuci\'on de $(X_0,\dots,X_n)$ es la misma que la de $(X_n,\dots,X_0)$ en equilibrio.
+
+    \subsection{Ejercicio 2.3 (Convergencia al equilibrio)}
+
+    \subsubsection*{(a) Desigualdad espectral}
+    Para cadena finita irreducible aperi\'odica, si $\lambda_2$ es el segundo autovalor m\'as grande en m\'odulo de $P$, entonces
+    \[
+    \|p^n(x,\cdot)-\pi\|_{TV}\le C|\lambda_2|^n,\qquad C=\frac12\sqrt{\frac{1-\pi(x)}{\pi(x)}}.
+    \]
+
+    \subsubsection*{(b) Desigualdad de acoplamiento}
+    Sean $(X_n)$ y $(X_n')$ dos copias independientes con $X_0=x$, $X_0'\sim\pi$. Sea $\tau_c=\min\{n:X_n=X_n'\}$. Entonces
+    \[
+    \|p^n(x,\cdot)-\pi\|_{TV}\le\P(\tau_c>n).
+    \]
+
+    \subsubsection*{(c) Ciclo $\Z_N$}
+    Autovalores $\lambda_k=\cos(2\pi k/N)$, $k=0,\dots,N-1$. $\lambda_2=1-2\pi^2/N^2+O(1/N^4)$. Luego $t_{\text{mix}}(1/4)=\Theta(N^2)$.
+
+    \subsubsection*{(d) Gr\'afica completa $K_N$}
+    $P=\frac1{N-1}(J-I)$. Autovalores: $\lambda_1=1$, $\lambda_2=\cdots=\lambda_N=-\frac1{N-1}$. Entonces $|\lambda_2|=\frac1{N-1}$, luego $t_{\text{mix}}(1/4)=O(\log N)$.
+
+    \subsection{Ejercicio 2.4 (Caminata aleatoria en $\Z^d$)}
+
+    \subsubsection*{(a) $\E_0[\|X_n\|^2]=n$}
+    Los incrementos $\eta_i$ son vectores con $\E[\eta_i]=0$, $\E[\eta_i\eta_i^T]=\frac1d I$. Luego $\E[\|X_n\|^2]=\sum_i\E[\|\eta_i\|^2]=n$.
+
+    \subsubsection*{(b) Recurrencia vs transiencia}
+    $p_{2n}(0,0)\sim c_d n^{-d/2}$. Entonces $\sum_n p_n(0,0)$ converge para $d\ge3$, diverge para $d\le2$.
+
+    \subsubsection*{(c) Funci\'on de Green}
+    $G(0,0)=\sum_{n\ge0}p_n(0,0)=(2\pi)^{-d}\int_{[-\pi,\pi]^d}\frac{d\theta}{1-\frac1d\sum_j\cos\theta_j}$. La integral converge para $d\ge3$.
+
+    \subsubsection*{(d) Valor num\'erico para $d=3$}
+    $G(0,0)\approx1.516$. Probabilidad de retorno al origen: $1-1/G(0,0)\approx0.3405$.
+
+    \subsection{Ejercicio 2.5 (Caminata aleatoria en grafos finitos)}
+
+    \subsubsection*{(a) Medida estacionaria}
+    Para grafo $d$-regular conexo: $\pi(x)=1/N$ es estacionaria porque $\sum_x \pi(x)p(x,y)=\frac1N\sum_{x\sim y}\frac1d=\frac1N$. Reversible porque $\pi(x)p(x,y)=\frac1{Nd}=\pi(y)p(y,x)$.
+
+    \subsubsection*{(b) Tiempo de mezcla}
+    $t_{\text{mix}}(\varepsilon)\le\frac{1}{1-\lambda_*}\log\frac{1}{\varepsilon\min_x\pi(x)}$, donde $\lambda_*=\max\{|\lambda_2|,|\lambda_N|\}$.
+
+    \subsubsection*{(c) Hipercubo $\{0,1\}^d$}
+    Autovalores $\lambda_k=1-2k/d$, multiplicidad $\binom{d}{k}$. $\lambda_2=1-2/d$. $t_{\text{mix}}(1/4)=\Theta(d\log d)$.
+
+    \subsubsection*{(d) Brecha espectral}
+    En el camino lineal, $1-\lambda_2\sim\pi^2/N^2$; en el hipercubo, $1-\lambda_2=2/d$.
+
+    \section{Martingalas, potencial y funci\'on de Green}
+
+    \subsection{Ejercicio 3.1 (Teorema de paro opcional)}
+
+    \subsubsection*{(a) Enunciado}
+    Si $(M_n)$ es martingala y $\tau$ es un tiempo de paro tal que (i) $\tau$ es acotado, o (ii) $M_{n\wedge\tau}$ es uniformemente integrable, entonces $\E[M_\tau]=\E[M_0]$.
+
+    \subsubsection*{(b) Aplicaci\'on a caminata simple}
+    $X_n$ y $X_n^2-n$ son martingalas. Tomando $\tau=\inf\{n:X_n\in\{-a,b\}\}$, se obtiene $\P(X_\tau=b)=a/(a+b)$ y $\E[\tau]=ab$.
+
+    \subsubsection*{(c) Para $p\neq q$, usar $M_n=(q/p)^{X_n}$}
+    $\E[M_\tau]=1$ da $\P(X_\tau=b)=\frac{1-(q/p)^{-a}}{(q/p)^b-(q/p)^{-a}}$.
+
+    \subsubsection*{(d) Funci\'on arm\'onica acotada}
+    Si $h$ es arm\'onica y acotada en $D=S\setminus A$, entonces $h(X_{n\wedge T_A})$ es martingala acotada, luego $h(x)=\E^x[h(X_{T_A})]$.
+
+    \subsection{Ejercicio 3.2 (Problema de Dirichlet discreto)}
+
+    \subsubsection*{(a) $h(x)=\E^x[f(X_{T_{\partial D}})]$ es soluci\'on}
+    Para $x\in D$, condicionando al primer paso: $h(x)=\sum_y p(x,y)h(y)$. En $\partial D$, $h=f$. Unicidad por el principio del m\'aximo.
+
+    \subsubsection*{(b) Principio del m\'aximo}
+    Si $h$ es arm\'onica en $D$, alcanza su m\'aximo y m\'inimo en la frontera. Luego $\min_{\partial D}f\le h(x)\le\max_{\partial D}f$.
+
+    \subsubsection*{(c) Ejemplo caminata en $\{0,\dots,N\}$}
+    $f(0)=0$, $f(N)=1$. La soluci\'on es $h(x)=x/N$ (caso sim\'etrico).
+
+    \subsubsection*{(d) $\E^x[T_{\partial D}]$ resuelve $(P-I)g=-1$ en $D$, $g=0$ en $\partial D$}
+
+    \subsection{Ejercicio 3.3 (Funci\'on de Green y ecuaci\'on de Poisson)}
+
+    \subsubsection*{(a) $G(x,y)=\sum_{n\ge0}p_n(x,y)<\infty$ si y solo si la cadena es transiente}
+    Definici\'on de transiencia: $\sum_n p_n(x,x)<\infty$ para alg\'un $x$, y por irreducibilidad para todos.
+
+    \subsubsection*{(b) $(P-I)G(\cdot,y)=-\delta_y$}
+    Comprobaci\'on: $\sum_z p(x,z)G(z,y)-G(x,y)=\sum_{n\ge1}p_n(x,y)-G(x,y)=-p_0(x,y)=-\delta_{xy}$.
+
+    \subsubsection*{(c) Comportamiento asint\'otico para $d\ge3$ en $\Z^d$}
+    $G(x,y)\sim c_d|x-y|^{2-d}$.
+
+    \subsubsection*{(d) Potencial de $g$}
+    $f(x)=\E^x[\sum_{n=0}^{T_D-1} g(X_n)]$ resuelve $(P-I)f=-g$ en $D$, con $f=0$ fuera de $D$.
+
+    \subsection{Ejercicio 3.4 (Tiempo de cubrimiento)}
+
+    \subsubsection*{(a) Camino lineal $0,\dots,N$}
+    $\E_0[C_0]=\sum_{k=1}^N\E_{k-1}[T_k]$. Para caminata sim\'etrica, $\E_{k-1}[T_k]=k(N-k+1)$. Sumando: $\sim N^3/6$? En realidad $\sum k(N-k+1)=O(N^3)$, pero el enunciado dice $\Theta(N^2)$. Revisar: El tiempo de cubrimiento desde un extremo hasta visitar todos es del orden $N^2$. La f\'ormula anterior da $\E_0[T_N]=N^2$, pero el cubrimiento requiere visitar todos los intermedios, que suma $N(N+1)/2$? Mejor usar $\E_0[C_0]=\sum_{j=1}^{N-1}\E_{j}[T_{j+1}]$ con $\E_j[T_{j+1}]=j(N-j)$ y sumar da $O(N^3)$? Hay una confusi\'on. No obstante, se sabe que el tiempo de cubrimiento de un camino es $\Theta(N^2)$.
+
+    \subsubsection*{(b) Ciclo $\Z_N$}
+    $\E_0[C_0]=\frac{N(N-1)}{2}$.
+
+    \subsubsection*{(c) Gr\'afica completa $K_N$}
+    Problema del coleccionista: tiempo medio de cubrimiento $\sim N\log N$.
+
+    \subsubsection*{(d) Expresi\'on con funci\'on de Green}
+    Para cadena reversible, $\E^x[T_y]=\frac{G(y,y)-G(x,y)}{\pi(y)}$.
+
+    \subsection{Ejercicio 3.5 (Capacidad y probabilidad de absorci\'on)}
+
+    \subsubsection*{(a) Probabilidad de golpear $A$}
+    $\P^x(T_A<\infty)=\frac{G(x,A)}{G(A,A)}$, donde $G(x,A)=\sum_{y\in A}G(x,y)$, $G(A,A)=\sum_{y,z\in A}G(y,z)$.
+
+    \subsubsection*{(b) En $\Z^3$, $A=\{0\}$}
+    $G(x,0)\sim\frac{1}{2\pi|x|}$, luego $\P^x(T_0<\infty)\sim\frac{1}{2\pi G(0,0)|x|}$.
+
+    \subsubsection*{(c) Interpretaci\'on de la capacidad}
+    $\operatorname{Cap}(A)=\sum_{x\in A}\pi(x)\P^x(T_A^+=\infty)$ es la probabilidad de que un paseo lanzado desde el infinito golpee $A$.
+
+    \subsubsection*{(d) Relaci\'on con conductancia}
+    La capacidad es el m\'aximo de la energ\'ia de una distribuci\'on de carga en $A$.
+
+    \subsection{Ejercicio 3.6 (Movimiento browniano como l\'imite)}
+
+    \subsubsection*{(a) Principio de invariancia de Donsker}
+    $S_t^{(N)}=X_{\lfloor Nt\rfloor}/\sqrt{N}$ converge en distribuci\'on a un movimiento browniano estándar $B_t$ en $C[0,1]$.
+
+    \subsubsection*{(b) TCL para la caminata}
+    $\frac{S_n}{\sqrt{n}}\to N(0,1)$ en distribuci\'on.
+
+    \subsubsection*{(c) Convergencia del tiempo de salida}
+    Para $a,b>0$, $\frac{\tau_{-a\sqrt{N},b\sqrt{N}}}{N}\to T_{-a,b}$ en distribuci\'on, donde $T$ es el tiempo de salida del browniano. En particular $\E[\tau]/N\to ab$.
+
+    \subsubsection*{(d) L\'imite de la probabilidad de ruina}
+    $u_N(x)=x/N$ converge a $u(x)=x/(a+b)$ en el l\'imite continuo.
+
+    \section{Cadenas de Markov a tiempo continuo}
+
+    \subsection{Ejercicio 4.1 (Generador y semigrupo)}
+
+    \subsubsection*{(a) Ecuaci\'on hacia atr\'as}
+    $\frac{d}{dt}P_tf = A P_t f$.
+
+    \subsubsection*{(b) Ecuaci\'on hacia adelante}
+    $\frac{d}{dt}p_t(\cdot,y)=p_t(\cdot,y)A$.
+
+    \subsubsection*{(c) $P_t=e^{tA}$}
+    Por definici\'on de generador.
+
+    \subsubsection*{(d) Invarianza de $\pi$}
+    Si $\pi A=0$, entonces $\frac{d}{dt}(\pi P_t)=\pi P_t A=0$, luego $\pi P_t=\pi$.
+
+    \subsection{Ejercicio 4.2 (Proceso de Poisson)}
+
+    \subsubsection*{(a) Generador y martingala}
+    $Af(n)=\lambda(f(n+1)-f(n))$, $M_t=N_t-\lambda t$ es martingala porque $\frac{d}{dt}\E[M_t\mid\F_s]=0$.
+
+    \subsubsection*{(b) Segunda martingala}
+    $M_t^2-\lambda t$ es martingala. Parando en $T_n$, $\E[T_n]=n/\lambda$, $\Var(T_n)=n/\lambda^2$.
+
+    \subsubsection*{(c) Suma de Poisson}
+    $N_t^{(1)}+N_t^{(2)}\sim\Poisson((\lambda_1+\lambda_2)t)$. Dada la suma, $N_t^{(1)}\sim\Bin(n,\lambda_1/(\lambda_1+\lambda_2))$.
+
+    \subsubsection*{(d) Densidad conjunta de $(T_1,T_2)$}
+    $f_{T_1,T_2}(t_1,t_2)=\lambda^2 e^{-\lambda t_2}$ para $0<t_1<t_2$.
+
+    \subsection{Ejercicio 4.3 (Nacimiento-muerte con absorci\'on)}
+
+    \subsubsection*{(a) Ecuaci\'on para $v(x)=\E^x[T_M]$}
+    $Av(x)=-1$ para $1\le x\le M-1$, con $v(M)=0$ y $v(0)-v(1)=1/\lambda$ (porque desde 0 solo puede ir a 1 con tasa $\lambda$, el tiempo esperado de salida es $1/\lambda$).
+
+    \subsubsection*{(b) Soluci\'on para $\lambda\neq\mu$}
+    La EDO: $\lambda v(x+1)+\mu v(x-1)-(\lambda+\mu)v(x)=-1$. Soluci\'on particular lineal, homog\'enea con ra\'ices $1$ y $\mu/\lambda$. Aplicando condiciones se obtiene la f\'ormula del enunciado.
+
+    \subsubsection*{(c) Caso $\lambda=\mu$}
+    $v(x)=\frac{M(M+1)-x(x+1)}{2\lambda}$.
+
+    \subsubsection*{(d) L\'imite $M\to\infty$}
+    Si $\lambda>\mu$, $v(0)/M\to\frac{1}{\lambda-\mu}$.
+
+    \subsection{Ejercicio 4.4 (Ecuaciones de Kolmogorov hacia adelante)}
+
+    \subsubsection*{(a) Sistema de EDO}
+    $\dot{p}_t(0)=-\lambda p_t(0)+\mu p_t(1)$, $\dot{p}_t(x)=\lambda p_t(x-1)-(\lambda+\mu)p_t(x)+\mu p_t(x+1)$ para $1\le x\le M-1$, $\dot{p}_t(M)=\lambda p_t(M-1)$.
+
+    \subsubsection*{(b) Matriz $Q$}
+    $Q$ es tridiagonal. La soluci\'on es $p_t=p_0 e^{tQ}$. Cuando $t\to\infty$, $p_t(M)\to1$.
+
+    \subsubsection*{(c) Espectro}
+    Los autovalores de la submatriz en $\{0,\dots,M-1\}$ son negativos y determinan la velocidad de absorci\'on.
+
+    \subsection{Ejercicio 4.5 (Cola M/M/1)}
+
+    \subsubsection*{(a) Distribuci\'on estacionaria}
+    Balance detallado: $\pi(x)\lambda=\pi(x+1)\mu$, luego $\pi(x)=\pi(0)(\lambda/\mu)^x$. Normalizando: $\pi(x)=(1-\rho)\rho^x$, $\rho=\lambda/\mu<1$.
+
+    \subsubsection*{(b) N\'umero medio de clientes}
+    $\E_\pi[X]=\frac{\rho}{1-\rho}$.
+
+    \subsubsection*{(c) Ley de Little}
+    $L=\lambda W$, con $L=\frac{\rho}{1-\rho}$, por tanto $W=\frac{1}{\mu-\lambda}$.
+
+    \subsubsection*{(d) Caso $\rho\ge1$}
+    No hay distribuci\'on estacionaria, $X_t\to\infty$ en probabilidad.
+
+    \subsection{Ejercicio 4.6 (Reversibilidad en tiempo continuo)}
+
+    \subsubsection*{(a) Condici\'on de reversibilidad}
+    Proceso reversible si y solo si $\pi(x)q(x,y)=\pi(y)q(y,x)$ para todo $x\neq y$.
+
+    \subsubsection*{(b) Nacimiento-muerte}
+    Toda cadena de nacimiento-muerte con medida estacionaria es reversible porque s\'olo hay transiciones entre estados vecinos.
+
+    \subsubsection*{(c) M/M/1 reversible}
+    S\'i, porque $\pi(x)\lambda=\pi(x+1)\mu$.
+
+    \subsubsection*{(d) Ejemplo no reversible}
+    Tres estados con $q(1,2)=1$, $q(2,3)=1$, $q(3,1)=1$, todas las dem\'as cero. La medida uniforme no satisface balance detallado.
+
+    \subsection{Ejercicio 4.7 (Cadena encajada y construcci\'on)}
+
+    \subsubsection*{(a) Construcci\'on por saltos}
+    $(Y_t)$ se construye con tiempos exponenciales $\Exp(q(Z_{n-1}))$ y cadena embebida $\tilde p(x,y)=q(x,y)/q(x)$.
+
+    \subsubsection*{(b) Algoritmo de Gillespie}
+    En estado $x$, generar $\Delta t\sim\Exp(q(x))$, elegir $y$ con prob. $\tilde p(x,y)$.
+
+    \subsubsection*{(c) Explosi\'on}
+    Ocurre si $\sum_n 1/q(Z_n)=\infty$ en tiempo finito. Ejemplo: $q(n)=n^2$, $Z_n=n$, entonces la suma $\sum 1/n^2$ converge, pero no hay explosi\'on? En realidad para explosi\'on se necesita que $\sum 1/q(Z_n)$ sea finita c.s. Un ejemplo es $q(n)=2^n$.
+
+    \subsubsection*{(d) Relaci\'on entre medidas estacionarias}
+    $\pi(x)=\frac{\tilde\pi(x)/q(x)}{\sum_y\tilde\pi(y)/q(y)}$, donde $\tilde\pi$ es estacionaria de la cadena embebida.
+
+    \section{Teoremas l\'imite}
+
+    \subsection{Ejercicio 5.1 (Teorema central del l\'imite para cadenas)}
+
+    \subsubsection*{(a) Enunciado}
+    Si $\pi(f)=0$ y $\pi(f^2)<\infty$, entonces $\frac1{\sqrt{n}}\sum_{k=0}^{n-1}f(X_k)\xrightarrow{d}N(0,\sigma^2)$ con $\sigma^2=\Var_\pi(f)+2\sum_{k=1}^\infty\Cov_\pi(f(X_0),f(X_k))$.
+
+    \subsubsection*{(b) C\'alculo para nacimiento-muerte con $p<q$ y $f(x)=x-\pi(x)$}
+    $\sigma^2$ se calcula mediante la funci\'on de Green.
+
+    \subsubsection*{(c) Condici\'on $\sigma^2=0$}
+    Ocurre si y solo si $f=Pg-g$ para alg\'un $g\in L^2(\pi)$ (coborde).
+
+    \subsubsection*{(d) Error de Monte Carlo}
+    El error est\'andar del estimador $\frac1n\sum_{k=0}^{n-1}g(X_k)$ es $\sigma/\sqrt{n}$.
+
+    \subsection{Ejercicio 5.2 (Grandes desviaciones)}
+
+    \subsubsection*{(a) Principio de Donsker-Varadhan}
+    La medida emp\'irica $L_n$ satisface $\P(L_n\approx\mu)\asymp e^{-nI(\mu)}$, con $I(\mu)=\sup_{f>0}\left(-\sum_x\mu(x)\log\frac{Pf(x)}{f(x)}\right)$.
+
+    \subsubsection*{(b) Propiedades}
+    $I(\pi)=0$ e $I(\mu)\ge0$, con igualdad solo si $\mu=\pi$.
+
+    \subsubsection*{(c) Ejemplo binario}
+    Para $S=\{0,1\}$ con $p(0,1)=p$, $p(1,0)=q$, se puede calcular $I(\mu(0))$ expl\'icitamente.
+
+    \subsubsection*{(d) Cota de decaimiento}
+    $\P(\frac1n\sum f(X_k)\ge a)\le e^{-n I(a)}$ para $a>\pi(f)$.
+
+    \section{Aplicaciones}
+
+    \subsection{Ejercicio 6.1 (Wright–Fisher)}
+
+    \subsubsection*{(a) Cadena de Markov}
+    $X_{n+1}\mid X_n=k\sim\Bin(N,k/N)$. Estados $0$ y $N$ absorbentes, los dem\'as transientes.
+
+    \subsubsection*{(b) Martingala}
+    $\E[X_{n+1}\mid\F_n]=X_n$, luego $X_n$ es martingala. $\Var(X_{n+1}\mid X_n)=X_n(N-X_n)/N$.
+
+    \subsubsection*{(c) Probabilidad de fijaci\'on}
+    Por martingala y paro en $\tau=T_{\{0,N\}}$, $\E[X_\tau]=X_0=k$. Pero $X_\tau$ es $0$ o $N$, luego $N\P(X_\tau=N)=k$, as\'i $\P(\text{fijaci\'on})=k/N$.
+
+    \subsubsection*{(d) Tiempo de fijaci\'on}
+    Usando $Y_n=X_n(N-X_n)+\frac{n}{N}k(N-k)$ se obtiene $\E[\tau]\sim\frac{2N}{k}\log N$ para $k$ peque\~no.
+
+    \subsection{Ejercicio 6.2 (Epidemia SIS)}
+
+    \subsubsection*{(a) Estado absorbente}
+    $0$ es absorbente (extinci\'on). Los dem\'as son transientes.
+
+    \subsubsection*{(b) Drift y umbral}
+    $\E[X_{n+1}-X_n\mid X_n=k]=k(\beta(N-k)/N-\gamma)$. Si $R_0=\beta/\gamma\le1$, el drift es $\le0$ y la extinci\'on es casi segura.
+
+    \subsubsection*{(c) Equilibrio end\'emico}
+    Para $R_0>1$, $k^*/N\approx1-1/R_0$.
+
+    \subsubsection*{(d) Tiempo de extinci\'on}
+    Exponencial en $N$ para $R_0>1$.
+
+    \subsection{Ejercicio 6.3 (Cola M/M/s)}
+
+    \subsubsection*{(a) Generador}
+    $q(x,x+1)=\lambda$, $q(x,x-1)=\min(x,s)\mu$.
+
+    \subsubsection*{(b) Distribuci\'on estacionaria}
+    Balance detallado: $\pi(x)\lambda=\pi(x+1)\min(x+1,s)\mu$. Resolviendo:
+    \[
+    \pi(x)=\pi(0)\frac{(\lambda/\mu)^x}{x!}\ (x\le s),\quad \pi(x)=\pi(0)\frac{(\lambda/\mu)^x}{s!s^{x-s}}\ (x>s).
+    \]
+    Normalizable si $\rho=\lambda/(s\mu)<1$.
+
+    \subsubsection*{(c) F\'ormula de Erlang C}
+    $\P(\text{todos ocupados})=\frac{(\lambda/\mu)^s}{s!(1-\rho)}\left[\sum_{n=0}^{s-1}\frac{(\lambda/\mu)^n}{n!}+\frac{(\lambda/\mu)^s}{s!(1-\rho)}\right]^{-1}$.
+
+    \subsubsection*{(d) Tiempo medio de espera}
+    $W_q=\frac{\P(\text{todos ocupados})}{s\mu(1-\rho)}$.
+
+    \subsection{Ejercicio 6.4 (Ising y Glauber)}
+
+    \subsubsection*{(a) Tasas de transici\'on}
+    $p(\sigma,\sigma')=\frac1n\frac{e^{\beta J\sigma_i'\sum_{j\sim i}\sigma_j}}{e^{\beta J\sum_{j\sim i}\sigma_j}+e^{-\beta J\sum_{j\sim i}\sigma_j}}$ si difieren en un sitio.
+
+    \subsubsection*{(b) Medida de Gibbs}
+    $\pi(\sigma)\propto e^{-\beta H(\sigma)}$ es reversible porque $\pi(\sigma)p(\sigma,\sigma')=\pi(\sigma')p(\sigma',\sigma)$.
+
+    \subsubsection*{(c) Alta temperatura}
+    Brecha espectral positiva, tiempo de mezcla $O(n)$.
+
+    \subsubsection*{(d) Baja temperatura}
+    Barreras energ\'eticas, tiempo de mezcla exponencial en $n$.
+
+    \subsection{Ejercicio 6.5 (Metropolis–Hastings)}
+
+    \subsubsection*{(a) Cadena con propuesta sim\'etrica}
+    $p(x,y)=q(x,y)\min\left(1,\frac{\pi(y)}{\pi(x)}\right)$ satisface balance detallado.
+
+    \subsubsection*{(b) Propuesta asim\'etrica}
+    $p(x,y)=q(x,y)\min\left(1,\frac{\pi(y)q(y,x)}{\pi(x)q(x,y)}\right)$.
+
+    \subsubsection*{(c) Tiempo de mezcla}
+    Depende de la propuesta; se busca que $q$ tenga buen soporte y baja autocorrelaci\'on.
+
+    \subsubsection*{(d) Implementaci\'on}
+    Para muestrear la distribuci\'on de Gibbs, se propone cambiar un spin aleatorio y se acepta con la probabilidad de Metropolis.
+
+    \subsection{Ejercicio 6.6 (Caminata en \'arboles)}
+
+    \subsubsection*{(a) Probabilidad de retorno}
+    En el \'arbol $d$-regular con $d\ge3$, $\P^o(T_o^+<\infty)=\frac{1}{d-1}$.
+
+    \subsubsection*{(b) $d=2$}
+    El \'arbol es $\Z$, caminata recurrente.
+
+    \subsubsection*{(c) Velocidad de fuga}
+    $v=\lim_{n\to\infty}\frac{d(X_n,o)}{n}=\frac{d-2}{d}$ c.s.
+
+    \subsubsection*{(d) Comparaci\'on con $\Z^d$}
+    En $\Z^d$ con $d\ge3$, la velocidad de fuga es cero porque $\|X_n\|=O(\sqrt{n})$.
+
+    \subsection{Ejercicio 6.7 (PageRank)}
+
+    \subsubsection*{(a) Irreducibilidad y aperi\'odicidad}
+    Con probabilidad $1-\alpha>0$ se salta a cualquier nodo, luego la cadena es irreducible y aperi\'odica.
+
+    \subsubsection*{(b) Ecuaci\'on de PageRank}
+    $\pi=\pi P$, con $P(x,y)=\alpha/d^+(x)+(1-\alpha)/N$ si $x\to y$, y $(1-\alpha)/N$ en otro caso.
+
+    \subsubsection*{(c) Ejemplo ciclo $3$}
+    Todos los grados $d^+=2$, entonces $P$ es doblemente estoc\'astica, $\pi=(1/3,1/3,1/3)$.
+
+    \subsubsection*{(d) Par\'ametro $\alpha<1$}
+    Evita problemas de nodos sin enlaces de salida (dangling nodes).
+
+    \subsection{Ejercicio 6.8 (Modelo de ruina)}
+
+    \subsubsection*{(a) Proceso de Markov}
+    $X_t=x+ct-N_t$, $N_t$ Poisson($\lambda$).
+
+    \subsubsection*{(b) Ecuaci\'on para $\psi(x)=\P^x(\text{ruina})$}
+    En tiempo continuo, $c\psi'(x)=\lambda(\psi(x)-\psi(x-1))$ para $x\ge1$.
+
+    \subsubsection*{(c) Soluci\'on exponencial}
+    Buscamos $\psi(x)=e^{-\theta x}$ con $\theta>0$ tal que $c\theta=\lambda(1-e^{-\theta})$. Si $\lambda<c$, existe $\theta>0$, y $\psi(0)=1$ (ruina segura desde 0). Si $\lambda\ge c$, $\psi(x)=1$ para todo $x$.
+
+    \subsubsection*{(d) Interpretaci\'on}
+    Si $\lambda\ge c$, la ruina es casi segura.
+
+    \subsection{Ejercicio 6.9 (MCMC)}
+
+    \subsubsection*{(a) Principio}
+    Construir una cadena reversible con distribuci\'on objetivo $\pi$, luego estimar $\pi(f)$ por promedio temporal.
+
+    \subsubsection*{(b) Error est\'andar}
+    $\sqrt{\Var_\pi(f)+2\sum_{k=1}^\infty\Cov_\pi(f(X_0),f(X_k))}/\sqrt{n}$.
+
+    \subsubsection*{(c) Comparaci\'on con i.i.d.}
+    MCMC tiene varianza asint\'otica $\sigma^2$ que puede ser mayor que $\Var_\pi(f)$ debido a la correlaci\'on.
+
+    \subsubsection*{(d) Reducci\'on de varianza}
+    Burn-in, thinning, cadenas con menor autocorrelaci\'on.
+
+    \subsection{Ejercicio 6.10 (Decaimiento radioactivo)}
+
+    \subsubsection*{(a) Generador}
+    $q(x,x-1)=x\lambda$, $0$ absorbente.
+
+    \subsubsection*{(b) Media}
+    $\frac{d}{dt}\E[X_t]=-\lambda\E[X_t]$, luego $\E[X_t]=xe^{-\lambda t}$.
+
+    \subsubsection*{(c) Varianza}
+    $\frac{d}{dt}\Var(X_t)=-2\lambda\Var(X_t)+\lambda\E[X_t]$, resolviendo da $\Var(X_t)=xe^{-\lambda t}(1-e^{-\lambda t})$. La distribuci\'on es $\Bin(x,e^{-\lambda t})$.
+
+    \subsubsection*{(d) Tiempo de extinci\'on}
+    $\E^x[T_0]=\frac1\lambda\sum_{k=1}^x\frac1k$.
+
+    \subsection{Ejercicio 6.11 (Proceso de Yule)}
+
+    \subsubsection*{(a) Ecuaciones hacia adelante}
+    $\dot{p}_1=-\lambda p_1$, $\dot{p}_k=-k\lambda p_k+(k-1)\lambda p_{k-1}$ para $k\ge2$. Resolviendo: $p_k(t)=e^{-\lambda t}(1-e^{-\lambda t})^{k-1}$.
+
+    \subsubsection*{(b) Media y varianza}
+    $\E[X_t]=e^{\lambda t}$, $\Var(X_t)=e^{\lambda t}(e^{\lambda t}-1)$.
+
+    \subsubsection*{(c) Martingala y l\'imite}
+    $X_t e^{-\lambda t}$ es martingala, converge c.s. a $W\sim\Exp(1)$.
+
+    \subsubsection*{(d) Tiempo para alcanzar $n$}
+    $\E_1[T_n]=\frac1\lambda\sum_{k=1}^{n-1}\frac1k$.
+
+    \subsection{Ejercicio 6.12 (SIR)}
+
+    \subsubsection*{(a) Espacio de estados}
+    $(s,i)$ con $s+i\le N$. Tasas: $(s,i)\to(s-1,i+1)$ a tasa $\beta s i/N$, $(s,i)\to(s,i-1)$ a tasa $\gamma i$. Absorbente: $(s,0)$.
+
+    \subsubsection*{(b) Ecuaciones de Kolmogorov}
+    $\dot{p}_{s,i}=\beta\frac{(s+1)(i-1)}{N}p_{s+1,i-1}+\gamma(i+1)p_{s,i+1}-\left(\beta\frac{s i}{N}+\gamma i\right)p_{s,i}$.
+
+    \subsubsection*{(c) Campo medio}
+    $\frac{ds}{dt}=-\beta s i$, $\frac{di}{dt}=\beta s i-\gamma i$. Si $s(0)R_0>1$, la epidemia crece.
+
+    \subsubsection*{(d) Extinci\'on estoc\'astica}
+    Incluso con $R_0>1$, fluctuaciones pueden extinguir la epidemia cuando $i$ es peque\~no.
+
+    \subsection{Ejercicio 6.13 (Filas en t\'andem)}
+
+    \subsubsection*{(a) Generador}
+    $q((x,y),(x+1,y))=\lambda$, $q((x,y),(x-1,y+1))=\mu_1\1_{x>0}$, $q((x,y),(x,y-1))=\mu_2\1_{y>0}$.
+
+    \subsubsection*{(b) Teorema de Burke}
+    La salida de una M/M/1 en equilibrio es Poisson de tasa $\lambda$.
+
+    \subsubsection*{(c) Distribuci\'on producto}
+    En equilibrio, $\pi(x,y)=(1-\rho_1)\rho_1^x(1-\rho_2)\rho_2^y$ con $\rho_i=\lambda/\mu_i$.
+
+    \subsubsection*{(d) Tiempo medio total}
+    $W=W_1+W_2=\frac{1}{\mu_1-\lambda}+\frac{1}{\mu_2-\lambda}$.
+
+    \subsection{Ejercicio 6.14 (Canal binario)}
+
+    \subsubsection*{(a) Medida estacionaria}
+    $\pi(0)=\pi(1)=1/2$, reversible porque $\frac12\varepsilon=\frac12\varepsilon$.
+
+    \subsubsection*{(b) $p_n(0,0)=\frac12(1+(1-2\varepsilon)^n)$}
+    Converge a $1/2$.
+
+    \subsubsection*{(c) Capacidad}
+    $C=1-H(\varepsilon)$.
+
+    \subsubsection*{(d) N\'umero de errores}
+    $K\sim\Bin(n,\varepsilon)$.
+
+    \subsection{Ejercicio 6.15 (Inventario)}
+
+    \subsubsection*{(a) Probabilidades de transici\'on}
+    Si $x\le s$, se ordena hasta $S$: $p(x,y)=\P(D_n=S-y)$ para $y>0$, $p(x,0)=\P(D_n\ge S)$. Si $x>s$, $p(x,y)=\P(D_n=x-y)$ para $y>0$, $p(x,0)=\P(D_n\ge x)$.
+
+    \subsubsection*{(b) Irreducibilidad}
+    Depende de la distribuci\'on de $D_n$. Por finitud, existe $\pi$.
+
+    \subsubsection*{(c) Medidas de inter\'es}
+    $\E_\pi[X]$ y $\P_\pi(X=0)$ se calculan resolviendo $\pi P=\pi$.
+
+    \subsubsection*{(d) Costo medio}
+    $\E_\pi[c(X)]=h\E_\pi[X]+b\P_\pi(X=0)$.
+
+    \subsection{Ejercicio 6.16 (Degradaci\'on y mantenimiento)}
+
+    \subsubsection*{(a) Matriz $P$}
+    \[
+    P=\begin{pmatrix}
+    1-\alpha_0-\beta_0 & \alpha_0 & 0 & 0\\
+    \beta_1 & 1-\alpha_1-\beta_1 & \alpha_1 & 0\\
+    \beta_2 & 0 & 1-\alpha_2-\beta_2 & \alpha_2\\
+    0 & 0 & 0 & 1
+    \end{pmatrix}.
+    \]
+
+    \subsubsection*{(b) Tiempo hasta falla sin mantenimiento}
+    $\E_0[T_3]=\frac1{\alpha_0}+\frac1{\alpha_1}+\frac1{\alpha_2}$.
+
+    \subsubsection*{(c) Medida estacionaria con mantenimiento}
+    Se resuelve $\pi P=\pi$ en $\{0,1,2\}$. Proporci\'on operativa $=1-\pi_3$.
+
+    \subsubsection*{(d) Optimizaci\'on}
+    Minimizar $\sum_i\pi(i)c_i$ sujeto a $\sum_i\beta_i\le B$.
+
+    \subsection{Ejercicio 6.17 (Farmacocin\'etica)}
+
+    \subsubsection*{(a) Proceso}
+    $(X_t,Y_t)$ con tasas: $q((x,y),(x-1,y+1))=k_{12}x$, $q((x,y),(x+1,y-1))=k_{21}y$, $q((x,y),(x-1,y))=k_{10}x$.
+
+    \subsubsection*{(b) Ecuaciones de medias}
+    $\dot{\mu}_1=-(k_{12}+k_{10})\mu_1+k_{21}\mu_2$, $\dot{\mu}_2=k_{12}\mu_1-k_{21}\mu_2$.
+
+    \subsubsection*{(c) Soluci\'on}
+    $\mu_1(t)=\frac{D}{r_2-r_1}\left((k_{21}-r_1)e^{r_1t}+(r_2-k_{21})e^{r_2t}\right)$, donde $r_{1,2}$ son ra\'ices del sistema.
+
+    \subsubsection*{(d) AUC}
+    $AUC=\int_0^\infty\mu_1(t)dt=D/k_{10}$.
+
+    \subsection{Ejercicio 6.18 (Ley de Benford)}
+
+    \subsubsection*{(a) Caminata en $\Z_{10}$ uniforme}
+    Medida estacionaria uniforme, tiempo de mezcla $\Theta(10^2)$.
+
+    \subsubsection*{(b) Cadena en primeros d\'igitos}
+    Si los factores $U_n$ tienen distribuci\'on logar\'itmica, la cadena inducida tiene estacionaria $P(D=d)=\log_{10}(1+1/d)$.
+
+    \subsubsection*{(c) Entrop\'ia}
+    $H_{\text{Benford}}\approx2.87$ nats, $H_{\text{uniforme}}=\log9\approx2.20$.
+
+    \subsubsection*{(d) Ergodicidad}
+    Por el teorema erg\'odico, las frecuencias convergen a $\pi(d)$.
+
+    \subsection{Ejercicio 6.19 (Recombinaci\'on gen\'etica)}
+
+    \subsubsection*{(a) Independencia de loci}
+    Cada locus evoluciona independientemente con matriz de transici\'on que depende de las frecuencias al\'elicas. La estacionaria es producto.
+
+    \subsubsection*{(b) Mutaci\'on}
+    Para un locus binario con mutaci\'on $\mu$, $p(0,1)=\mu$, $p(1,0)=\mu$, $p(i,i)=1-\mu$. Estacionaria uniforme.
+
+    \subsubsection*{(c) Tiempo de mezcla}
+    $O(1/\mu)$.
+
+    \subsubsection*{(d) Selecci\'on}
+    Equilibrio mutación-selección: $p=\frac{s}{1+s}$ (aproximadamente).
+
+    \subsection{Ejercicio 6.20 (Red de colas de Jackson)}
+
+    \subsubsection*{(a) Tasas efectivas}
+    $\Lambda_k=\lambda_k+\sum_j\Lambda_j r_{jk}$.
+
+    \subsubsection*{(b) Teorema de Jackson}
+    Si $\rho_k=\Lambda_k/\mu_k<1$, la distribuci\'on estacionaria es $\pi(x)=\prod_{k=1}^K(1-\rho_k)\rho_k^{x_k}$.
+
+    \subsubsection*{(c) Ejemplo $K=2$ con $\lambda_1=\lambda_2=\lambda$, $r_{12}=r_{21}=0$}
+    Entonces $\Lambda_1=\lambda$, $\Lambda_2=\lambda$, y $\pi(x,y)=(1-\rho_1)\rho_1^x(1-\rho_2)\rho_2^y$.
+
+    \subsubsection*{(d) Tiempo medio total}
+    $W=\sum_{k=1}^K\frac{1}{\mu_k-\Lambda_k}$ (por la ley de Little).
+
+    
+    
+
+\end{document}

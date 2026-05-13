@@ -1,0 +1,66 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{Cadenas de Markov a tiempo continuo: generador, construcci\'on y ergodicidad}{2}{section*.2}%
+\contentsline {subsection}{Ejercicio 1.1}{2}{section*.3}%
+\contentsline {subsection}{Ejercicio 1.2}{2}{section*.4}%
+\contentsline {subsection}{Ejercicio 1.3 (Sistema de inventario)}{3}{section*.5}%
+\contentsline {subsection}{Ejercicio 1.4}{3}{section*.6}%
+\contentsline {subsection}{Ejercicio 1.5 (Reversibilidad)}{3}{section*.7}%
+\contentsline {subsection}{Ejercicio 1.6 (Ergodicidad)}{3}{section*.8}%
+\contentsline {subsection}{Ejercicio 1.7 (Caminata continua en $\math@bb {Z}$)}{4}{section*.9}%
+\contentsline {subsection}{Ejercicio 1.8 (M\'aquina con dos modos)}{4}{section*.10}%
+\contentsline {subsection}{Ejercicio 1.9 (Nacimiento--muerte invariante)}{4}{section*.11}%
+\contentsline {subsection}{Ejercicio 1.10 (Dos m\'aquinas)}{4}{section*.12}%
+\contentsline {subsection}{Ejercicio 1.11 (Simulaci\'on en Python)}{5}{section*.13}%
+\contentsline {subsection}{Ejercicio 1.12 (Nacimiento--muerte con deriva)}{6}{section*.14}%
+\contentsline {section}{Proceso de Poisson y sus extensiones elementales}{7}{section*.15}%
+\contentsline {subsection}{Ejercicio 2.1}{7}{section*.16}%
+\contentsline {subsection}{Ejercicio 2.2}{7}{section*.17}%
+\contentsline {subsection}{Ejercicio 2.3}{7}{section*.18}%
+\contentsline {subsection}{Ejercicio 2.4 (Adelgazamiento)}{7}{section*.19}%
+\contentsline {subsection}{Ejercicio 2.5 (Superposici\'on)}{7}{section*.20}%
+\contentsline {subsection}{Ejercicio 2.6 (Proceso de Poisson compuesto)}{7}{section*.21}%
+\contentsline {subsection}{Ejercicio 2.7}{7}{section*.22}%
+\contentsline {subsection}{Ejercicio 2.8}{8}{section*.23}%
+\contentsline {subsection}{Ejercicio 2.9}{8}{section*.24}%
+\contentsline {subsection}{Ejercicio 2.10}{8}{section*.25}%
+\contentsline {subsection}{Ejercicio 2.11 (Simulaci\'on)}{8}{section*.26}%
+\contentsline {subsection}{Ejercicio 2.12 (Simulaci\'on adelgazamiento y superposici\'on)}{8}{section*.27}%
+\contentsline {section}{Modelos de colas M/M/k y M/M/$\infty $}{9}{section*.28}%
+\contentsline {subsection}{Ejercicio 3.1}{9}{section*.29}%
+\contentsline {subsection}{Ejercicio 3.2}{9}{section*.30}%
+\contentsline {subsection}{Ejercicio 3.3}{9}{section*.31}%
+\contentsline {subsection}{Ejercicio 3.4 (M/M/k/k)}{9}{section*.32}%
+\contentsline {subsection}{Ejercicio 3.5 (M/M/$\infty $)}{9}{section*.33}%
+\contentsline {subsection}{Ejercicio 3.6}{9}{section*.34}%
+\contentsline {subsection}{Ejercicio 3.7}{9}{section*.35}%
+\contentsline {subsection}{Ejercicio 3.8}{10}{section*.36}%
+\contentsline {subsection}{Ejercicio 3.9}{10}{section*.37}%
+\contentsline {subsection}{Ejercicio 3.10}{10}{section*.38}%
+\contentsline {subsection}{Ejercicio 3.11 (Simulaci\'on)}{10}{section*.39}%
+\contentsline {subsection}{Ejercicio 3.12 (Simulaci\'on M/M/$\infty $)}{11}{section*.40}%
+\contentsline {section}{Optimal stopping para cadenas de Markov}{11}{section*.41}%
+\contentsline {subsection}{Ejercicio 4.1 (Recursi\'on de Bellman)}{11}{section*.42}%
+\contentsline {subsection}{Ejercicio 4.2}{11}{section*.43}%
+\contentsline {subsection}{Ejercicio 4.3 (Caminata sesgada)}{11}{section*.44}%
+\contentsline {subsection}{Ejercicio 4.4}{11}{section*.45}%
+\contentsline {subsection}{Ejercicio 4.5 (Identidad de Dynkin)}{12}{section*.46}%
+\contentsline {subsection}{Ejercicio 4.6 (Reemplazo de m\'aquina a tiempo continuo)}{12}{section*.47}%
+\contentsline {subsection}{Ejercicio 4.7 (Caminata con absorbentes)}{12}{section*.48}%
+\contentsline {subsection}{Ejercicio 4.8 (Iteraci\'on del operador de Bellman)}{12}{section*.49}%
+\contentsline {subsection}{Ejercicio 4.9 (Costo de espera)}{12}{section*.50}%
+\contentsline {subsection}{Ejercicio 4.10 (Venta de activo)}{12}{section*.51}%
+\contentsline {subsection}{Ejercicio 4.11 (Simulaci\'on)}{12}{section*.52}%
+\contentsline {subsection}{Ejercicio 4.12 (Simulaci\'on Monte Carlo para umbral)}{13}{section*.53}%
+\contentsline {section}{Martingalas asociadas y cambios de medida}{13}{section*.54}%
+\contentsline {subsection}{Ejercicio 5.1}{13}{section*.55}%
+\contentsline {subsection}{Ejercicio 5.2}{13}{section*.56}%
+\contentsline {subsection}{Ejercicio 5.3 (Transformaci\'on $h$)}{13}{section*.57}%
+\contentsline {subsection}{Ejercicio 5.4}{13}{section*.58}%
+\contentsline {subsection}{Ejercicio 5.5}{13}{section*.59}%
+\contentsline {subsection}{Ejercicio 5.6 (M/M/$\infty $)}{14}{section*.60}%
+\contentsline {subsection}{Ejercicio 5.7 (Tiempo de entrada)}{14}{section*.61}%
+\contentsline {subsection}{Ejercicio 5.8 (Funci\'on de Lyapunov)}{14}{section*.62}%
+\contentsline {subsection}{Ejercicio 5.9}{14}{section*.63}%
+\contentsline {subsection}{Ejercicio 5.10 (Riesgo y martingala exponencial)}{14}{section*.64}%
+\contentsline {subsection}{Ejercicio 5.11 (Simulaci\'on martingala compensada)}{14}{section*.65}%
+\contentsline {subsection}{Ejercicio 5.12 (Simulaci\'on cambio de medida)}{14}{section*.66}%
